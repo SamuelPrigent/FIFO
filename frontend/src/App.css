@@ -5,6 +5,24 @@
   background-color: white;
 }
 
+.mainContainer {
+  /* border: 2px solid red; */
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  width: 100%;
+  justify-content: center;
+  margin-top: 40px;
+  gap: 20px;
+}
+
+.sectionContainer {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
 .buttonContainer {
   display: flex;
   gap: 15px;
@@ -46,16 +64,12 @@
   color: #001a72;
 }
 
-.mainContainer {
+/* credits */
+.creditsSection {
   display: flex;
-  flex-direction: column;
-  height: auto;
-  width: 100%;
-  justify-content: center;
-  margin-top: 50px;
+  gap: 40px;
 }
 
-/* credits */
 .creditSection {
   display: flex;
   gap: 5px;
@@ -63,7 +77,7 @@
 }
 
 .creditSvg {
-  height: 25px;
+  height: 24px;
 }
 
 .resetSvg {
@@ -84,11 +98,4 @@
   align-items: center;
   gap: 8px;
   margin: 0px auto;
-}
-
-.sectionContainer {
-  margin-top: 35px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
 }

@@ -1,11 +1,8 @@
 import express from "express";
 const app = express();
 
-// Routes
-// -- url/
-app.get("/", (req, res) => {
-  res.send("Hello Waalaxy");
-});
+// import routes
+import creditsRoute from "./routes/credits.js";
 
 // Define Header for response - évite les erreurs de sécurité CORS
 app.use((req, res, next) => {
@@ -20,6 +17,14 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+// -- url/
+app.get("/", (req, res) => {
+  res.send("Hello Waalaxy");
+});
+
+// -- Routes
+app.use("/api/credits", creditsRoute);
 
 export default app;
 

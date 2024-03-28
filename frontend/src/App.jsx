@@ -13,16 +13,17 @@ function App() {
   //  queue
   const [queue, setQueue] = useState([]);
   // crédits
-  const [creditsA, setCreditsA] = useState(100);
-  const [creditsB, setCreditsB] = useState(100);
-  const [creditsC, setCreditsC] = useState(100);
+  const [creditsA, setCreditsA] = useState(20);
+  const [creditsB, setCreditsB] = useState(20);
+  const [creditsC, setCreditsC] = useState(20);
   // mounted
   const [mounted, setMounted] = useState(false);
 
   // généré les crédits par rapport au crédits max
-  const maxCreditsA = 100;
-  const maxCreditsB = 100;
-  const maxCreditsC = 100;
+  const maxCreditsA = 20;
+  const maxCreditsB = 20;
+  const maxCreditsC = 20;
+
   // reset queue
   function resetQueue() {
     setQueue([]);

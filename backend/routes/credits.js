@@ -1,21 +1,16 @@
-// Route des crédits
-
-// Création du router via express
+// Express router
 import express from "express";
 const router = express.Router();
-
-import creditCtrl from "../controllers/creditsController.js"; // Import Controller
+// Controllers
+import creditCtrl from "../controllers/creditsController.js";
 
 // -------------------------------------
 
-// debut routes: /api/credits/
-router.get("/:id", creditCtrl.getCredit); // Get credit number for ONE type
-router.put("/:id", creditCtrl.editCredit); // Edit credit numer for ONE type
+// Debut route: /api/credits/
+router.post("/", creditCtrl.createCredit);
+router.get("/:id", creditCtrl.getCreditById);
+router.put("/:id", creditCtrl.editCreditById);
 
 // -------------------------------------
 
 export default router;
-
-// -- method without "type": "module",
-// const express = require("express");
-// module.exports = router;

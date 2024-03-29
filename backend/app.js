@@ -1,8 +1,10 @@
 import express from "express";
 const app = express();
+import bodyParser from "body-parser";
 
-// import routes
-import creditsRoute from "./routes/credits.js";
+// Utilisation de body-parser pour parser le corps de la requête
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Define Header for response - évite les erreurs de sécurité CORS
 app.use((req, res, next) => {
@@ -18,10 +20,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// -- url/
+// -- Say hello
 app.get("/", (req, res) => {
   res.send("Hello Waalaxy");
 });
+
+// import routes
+import creditsRoute from "./routes/credits.js";
 
 // -- Routes
 app.use("/api/credits", creditsRoute);

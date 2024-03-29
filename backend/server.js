@@ -59,9 +59,3 @@ server.on("listening", () => {
 });
 
 server.listen(port);
-
-// -- method without "type": "module",
-// const mongoose = require("mongoose");
-// require("dotenv").config(); // password via .env
-// const http = require("http");
-// const app = require("./app");

@@ -71,23 +71,29 @@ function App() {
       setMounted(true); // Mettre à jour l'état pour indiquer que le composant est monté
     }
 
-    // function actionA()
-    // function actionB()
-    // function actionC()
+    function actionA() {
+      console.log("Execute: A");
+      setCreditsA(creditsA - 1); // -1 crédit (A)
+    }
+    function actionB() {
+      console.log("Execute: B");
+      setCreditsB(creditsB - 1); // -1 crédit (B)
+    }
+    function actionC() {
+      console.log("Execute: C");
+      setCreditsC(creditsC - 1); // -1 crédit (C)
+    }
 
     // ==== Debut // Every 15sec ====
     function executeAction(type) {
       if (type === "A") {
-        console.log("Execute: A");
-        setCreditsA(creditsA - 1); // -1 crédit (A)
+        actionA();
       }
       if (type === "B") {
-        console.log("Execute: B");
-        setCreditsB(creditsB - 1); // -1 crédit (B)
+        actionB();
       }
       if (type === "C") {
-        console.log("Execute: C");
-        setCreditsC(creditsC - 1); // -1 crédit (C)
+        actionC();
       }
     }
 

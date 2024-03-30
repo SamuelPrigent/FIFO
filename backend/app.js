@@ -1,8 +1,9 @@
+// Express
 import express from "express";
 const app = express();
-import bodyParser from "body-parser";
 
-// Utilisation de body-parser pour parser le corps de la requête
+// Body-parser (body requête)
+import bodyParser from "body-parser";
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -20,19 +21,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// -- Say hello
+// ==== Import routes ====
+import creditsRoute from "./routes/credits.js";
+
+// ==== Routes crédits ====
+app.use("/api/credits", creditsRoute);
+
+// ==== Say hello ====
 app.get("/", (req, res) => {
   res.send("Hello Waalaxy");
 });
 
-// import routes
-import creditsRoute from "./routes/credits.js";
-
-// -- Routes
-app.use("/api/credits", creditsRoute);
-
+// export
 export default app;
-
-// -- method without "type": "module",
-// const express = require("express");
-// module.exports = app;

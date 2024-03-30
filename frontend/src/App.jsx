@@ -2,38 +2,168 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 // style
-import "./reset.css";
-import "./App.css";
+import "./style/reset.css";
+import "./style/App.css";
 // assets
 import credit from "./assets/credit.svg";
 import reset2 from "./assets/reset2.svg";
 import reset from "./assets/reset.svg"; // dev mode
+import cross from "./assets/cross.svg"; // dev mode
+//
 
 function App() {
   //  queue
   const [queue, setQueue] = useState([]);
-  // crédits
-  const [creditsA, setCreditsA] = useState(20);
-  const [creditsB, setCreditsB] = useState(20);
-  const [creditsC, setCreditsC] = useState(20);
-  // mounted
-  const [mounted, setMounted] = useState(false);
-
-  // généré les crédits par rapport au crédits max
-  const maxCreditsA = 20;
-  const maxCreditsB = 20;
-  const maxCreditsC = 20;
+  // crédits data (state)
+  const [creditsA, setCreditsA] = useState(null);
+  const [creditsB, setCreditsB] = useState(null);
+  const [creditsC, setCreditsC] = useState(null);
+  // alert for credits
+  const [alertA, setAlertA] = useState(false);
+  const [alertB, setAlertB] = useState(false);
+  const [alertC, setAlertC] = useState(false);
 
   // reset queue
   function resetQueue() {
     setQueue([]);
+    // setAlertA(false);
+    // setAlertB(false);
+    // setAlertC(false);
   }
 
-  // reset crédits -- dev mode
+  // reset crédits and delete credits -- only for dev mode
+  function deleteCredits() {
+    console.clear();
+    // ==== Reset A --- update BDD + state local ====
+    fetch("http://127.0.0.1:3000/api/credits/A", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ number: 0 }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Credits A (updated) =>", data.number);
+        setCreditsA(0); // Maj state local
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+    // ==== Reset B --- update BDD + state local ====
+    fetch("http://127.0.0.1:3000/api/credits/B", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ number: 0 }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Credits B (updated) =>", data.number);
+        setCreditsB(0); // Maj state local
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+    // ==== Reset C --- update BDD + state local ====
+    fetch("http://127.0.0.1:3000/api/credits/C", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ number: 0 }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Credits C (updated) =>", data.number);
+        setCreditsC(0); // Maj state local
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  }
+
   function resetCredits() {
-    setCreditsA(100);
-    setCreditsB(100);
-    setCreditsC(100);
+    console.clear();
+    // ==== Reset A --- update BDD + state local ====
+    fetch("http://127.0.0.1:3000/api/credits/A", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ number: 5 }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Credits A (updated) =>", data.number);
+        setCreditsA(5); // Maj state local
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+    // ==== Reset B --- update BDD + state local ====
+    fetch("http://127.0.0.1:3000/api/credits/B", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ number: 5 }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Credits B (updated) =>", data.number);
+        setCreditsB(5); // Maj state local
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+    // ==== Reset C --- update BDD + state local ====
+    fetch("http://127.0.0.1:3000/api/credits/C", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ number: 5 }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Credits C (updated) =>", data.number);
+        setCreditsC(5); // Maj state local
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
   }
 
   // add action in queue
@@ -60,31 +190,163 @@ function App() {
     map: PropTypes.string,
   };
 
-  // setTimer actions
-  // setTimer 15 sec - éxécuter l'action suivante
-  // setTimer 15min - recalculer le nombre de crédits
-
-  // Exécution au premier rendu
+  // ====== (Execute 1x - on reload) ======
   useEffect(() => {
-    if (!mounted) {
-      generateRandomCredits();
-      setMounted(true); // Mettre à jour l'état pour indiquer que le composant est monté
+    function fetchDataForLocalState() {
+      // console.log("Fetch DATA");
+      // == Credit A
+      fetch("http://127.0.0.1:3000/api/credits/A")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          // Set data -> state
+          // console.log("Credit A:", data);
+          setCreditsA(data.number); // --- ERREUR ---- prend le dessus sur le generate
+        })
+        .catch((error) => {
+          console.error("There was a problem with the fetch operation:", error);
+        });
+      // == Credit B
+      fetch("http://127.0.0.1:3000/api/credits/B")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          // Set data -> state
+          // console.log("Credit B data:", data);
+          setCreditsB(data.number);
+        })
+        .catch((error) => {
+          console.error("There was a problem with the fetch operation:", error);
+        });
+      // == Credit C
+      fetch("http://127.0.0.1:3000/api/credits/C")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          // Set data -> state
+          // console.log("Credit C data:", data);
+          setCreditsC(data.number);
+        })
+        .catch((error) => {
+          console.error("There was a problem with the fetch operation:", error);
+        });
     }
+    fetchDataForLocalState();
+    // ======= (Fetch every 15s) =======
+    const intervalId = setInterval(fetchDataForLocalState, 15000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+  //
 
+  //
+  // ============ Interval 15sec // Execute les actions ============
+  useEffect(() => {
+    // Action (re-check if i have enough credit)
     function actionA() {
-      console.log("Execute: A");
-      setCreditsA(creditsA - 1); // -1 crédit (A)
+      if (creditsA > 0) {
+        console.log("Execute: A");
+        setCreditsA(creditsA - 1); // -1 crédit
+        // Update la BDD + state local en conséquence
+        fetch("http://127.0.0.1:3000/api/credits/A", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ number: creditsA - 1 }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Credits A (updated) =>", data.number);
+            setCreditsA(creditsA - 1); // Maj state local
+          })
+          .catch((error) => {
+            console.error(
+              "There was a problem with the fetch operation:",
+              error
+            );
+          });
+      }
     }
     function actionB() {
-      console.log("Execute: B");
-      setCreditsB(creditsB - 1); // -1 crédit (B)
+      if (creditsB > 0) {
+        console.log("Execute: B");
+        // setCreditsB(creditsB - 1); // -1 crédit
+        // Update la BDD + state local en conséquence
+        fetch("http://127.0.0.1:3000/api/credits/B", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ number: creditsB - 1 }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Credits B (updated) =>", data.number);
+            setCreditsB(creditsB - 1); // Maj state local
+          })
+          .catch((error) => {
+            console.error(
+              "There was a problem with the fetch operation:",
+              error
+            );
+          });
+      }
     }
     function actionC() {
-      console.log("Execute: C");
-      setCreditsC(creditsC - 1); // -1 crédit (C)
+      if (creditsC > 0) {
+        console.log("Execute: C");
+        // setCreditsC(creditsC - 1); // -1 crédit
+        // Update la BDD + state local en conséquence
+        fetch("http://127.0.0.1:3000/api/credits/C", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ number: creditsC - 1 }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Credits C (updated) =>", data.number);
+            setCreditsC(creditsC - 1); // Maj state local
+          })
+          .catch((error) => {
+            console.error(
+              "There was a problem with the fetch operation:",
+              error
+            );
+          });
+      }
     }
 
-    // ==== Debut // Every 15sec ====
     function executeAction(type) {
       if (type === "A") {
         actionA();
@@ -97,49 +359,66 @@ function App() {
       }
     }
 
+    function checkCreditForAction(type) {
+      if (type === "A") {
+        if (creditsA > 0) {
+          return true;
+        } else {
+          // alerte
+          console.log("Crédit insuffisant: A");
+          setAlertA(true);
+          return false;
+        }
+      }
+      if (type === "B") {
+        if (creditsB > 0) {
+          return true;
+        } else {
+          console.log("Crédit insuffisant: B");
+          setAlertB(true);
+          return false;
+        }
+      }
+      if (type === "C") {
+        if (creditsC > 0) {
+          return true;
+        } else {
+          console.log("Crédit insuffisant: C");
+          setAlertC(true);
+          return false;
+        }
+      }
+    }
+
     function nextAction() {
       if (queue.length > 0) {
         // -- console.log
         console.clear();
         console.log(queue);
-        // -- Execute l'action
+        // Get action type
         const type = queue[0];
-        executeAction(type);
-        // -- Remove premeir élément tableau
-        setQueue((previousQueue) => previousQueue.slice(1));
+        // Check if action have credits
+        const haveCredit = checkCreditForAction(type);
+        // --- Execute l'action
+        if (haveCredit) {
+          executeAction(type);
+          setQueue((previousQueue) => previousQueue.slice(1)); // retire l'action (éxécuté) du tableau
+        } else {
+          setQueue((previousQueue) => previousQueue.slice(1)); // retire l'action (non éxécuté) du tableau
+        }
+      } else {
+        // Désactive les altertes si aucunnes action n'est en attente
+        setAlertA(false);
+        setAlertB(false);
+        setAlertC(false);
       }
     }
-    // ==== Fin // Every 15sec ====
-
-    // ==== Debut // Every 15min ====
-    function generateRandomPercentage(number) {
-      // Calculer la plage de pourcentage
-      const minPercentage = 0.8; // 80%
-      const maxPercentage = 1; // 100%
-      // Générer un pourcentage aléatoire dans la plage spécifiée
-      const randomPercentage =
-        Math.random() * (maxPercentage - minPercentage) + minPercentage;
-      // Calculer le nombre aléatoire dans la plage spécifiée
-      const randomNumber = Math.round(number * randomPercentage);
-      return randomNumber;
-    }
-
-    function generateRandomCredits() {
-      setCreditsA(generateRandomPercentage(maxCreditsA));
-      setCreditsB(generateRandomPercentage(maxCreditsB));
-      setCreditsC(generateRandomPercentage(maxCreditsC));
-    }
-    // ==== Fin // Every 15min ====
-
-    // -- inverval
-    const intervalIdNextAction = setInterval(nextAction, 3000); // every 3 sec : nextAction()
-    const intervalIdRandomCredits = setInterval(generateRandomCredits, 100000); // every 100 sec : generateRandomCredits()
-    // clear interval
+    // => Inverval (15s) - 1s
+    const intervalIdNextAction = setInterval(nextAction, 1000); // nextAction()
     return () => {
       clearInterval(intervalIdNextAction);
-      clearInterval(intervalIdRandomCredits);
     };
-  }, [queue, creditsA, creditsB, creditsC, mounted]);
+  }, [queue, creditsA, creditsB, creditsC]);
 
   return (
     <>
@@ -147,24 +426,29 @@ function App() {
         <div className="appTitle">Waalaxy</div>
         <div className="creditsSection">
           <div className="creditSection">
-            <div>A -</div>
+            <div>A :</div>
             <div>{creditsA}</div>
             <img src={credit} className="creditSvg" />
           </div>
           <div className="creditSection">
-            <div>B -</div>
+            <div>B :</div>
             <div>{creditsB}</div>
             <img src={credit} className="creditSvg" />
           </div>
           <div className="creditSection">
-            <div>C -</div>
+            <div>C :</div>
             <div>{creditsC}</div>
             <img src={credit} className="creditSvg" />
           </div>
         </div>
         {/* only for dev mode */}
-        <div className="resetCredit" onClick={() => resetCredits()}>
-          <img src={reset} className="resetSvg" />
+        <div className="creditsButtonSection">
+          <div className="resetCredit" onClick={() => deleteCredits()}>
+            <img src={cross} className="crossSvg" />
+          </div>
+          <div className="resetCredit" onClick={() => resetCredits()}>
+            <img src={reset} className="resetSvg" />
+          </div>
         </div>
       </div>
       <div className="mainContainer">
@@ -215,6 +499,15 @@ function App() {
               "Aucune action en attente"
             )}
           </div>
+          {alertA ? (
+            <div className="alertText">{"Crédit insuffisant: A"}</div>
+          ) : null}
+          {alertB ? (
+            <div className="alertText">{"Crédit insuffisant: B"}</div>
+          ) : null}
+          {alertC ? (
+            <div className="alertText">{"Crédit insuffisant: C"}</div>
+          ) : null}
         </div>
       </div>
       {/* fin main container */}

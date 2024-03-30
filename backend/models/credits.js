@@ -18,6 +18,7 @@ const creditSchema = new mongoose.Schema({
     },
   },
   number: { type: Number, required: true },
+  maxNumber: { type: Number, required: true },
 });
 
 // name --> majuscules

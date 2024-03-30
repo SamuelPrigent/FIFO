@@ -78,10 +78,15 @@
 
 .creditSvg {
   height: 24px;
+  margin-left: 2px;
 }
 
 .resetSvg {
   height: 22px;
+}
+
+.crossSvg {
+  height: 18px;
 }
 
 .resetSvg2 {
@@ -98,4 +103,14 @@
   align-items: center;
   gap: 8px;
   margin: 0px auto;
+}
+
+.alertText {
+  color: #084fd1;
+}
+
+.creditsButtonSection {
+  display: flex;
+  gap: 17px;
+  align-items: center;
 }

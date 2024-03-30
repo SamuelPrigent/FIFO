@@ -4,8 +4,8 @@ import "dotenv/config";
 // Connexion
 mongoose
   .connect(process.env.MongoURL)
-  .then(() => console.log("Connexion à MongoDB réussie ! (server)"))
-  .catch(() => console.log("Connexion à MongoDB échouée ! (server)"));
+  .then(() => console.log("Connexion à MongoDB réussie !"))
+  .catch(() => console.log("Connexion à MongoDB échouée !"));
 
 // Server
 import http from "http";

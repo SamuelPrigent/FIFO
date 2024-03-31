@@ -1,25 +1,28 @@
 # React + NodeJS
 
-# Backend Local Database on ur machine
+# Configuration of Local Database
 
-Docs that explains how to configure machine for a local DB with MongoDB Atlas :
-https://www.mongodb.com/docs/manual/administration/configuration/#std-label-base-config
+This guide explains how to configure your machine to use a local database with MongoDB Atlas:
+[MongoDB Documentation](https://www.mongodb.com/docs/manual/administration/configuration/#std-label-base-config)
 
-- on MacOS : brew services start mongodb-community@7.0
+Exemple on MacOS:
 
-# Run Frontend
+- to start MongoDB server run `brew services start mongodb-community@7.0`
+- to stop MongoDB server run `brew services stop mongodb-community@7.0`
 
-- go in frontend folder
-- run `npm run dev`
-- listening on 5173
+# Running Frontend
 
-# Run Backend server
+- Navigate to frontend folder
+- Execute `npm run dev`
+- Listening on port 5173
 
-- go in backend folder
-- run `npm run dev` (nodemon server)
-- listening on 3000
+# Running Backend Server
 
-# Run Backend test
+- Navigate to the backend folder
+- Execute `npm run dev` (with nodemon)
+- Listening on port 3000
 
-- If Backend already use : `PORT=3001 npm run test`
-- If Backend not use : `npm run test`
+# Running Backend Tests
+
+- If the Backend is already running, use `PORT=3001 npm run test`
+- If the Backend is not running, use `npm run test`

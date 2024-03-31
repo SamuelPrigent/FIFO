@@ -2,10 +2,9 @@ import mongoose from "mongoose";
 import "dotenv/config";
 
 // Connexion to test server
-mongoose
-  .connect(process.env.MongoURL_test)
-  .then(() => console.log("Connexion à MongoDB réussie !"))
-  .catch(() => console.log("Connexion à MongoDB échouée !"));
+mongoose.connect(process.env.MongoURL_test);
+// .then(() => console.log("Connexion à MongoDB réussie !"))
+// .catch(() => console.log("Connexion à MongoDB échouée !"));
 
 // Server
 import http from "http";
@@ -23,7 +22,7 @@ const normalizePort = (val) => {
   return false;
 };
 
-const port = normalizePort(process.env.PORT || "3000");
+const port = normalizePort("3001"); // port de test
 app.set("port", port);
 
 // errorHandler recherche les erreurs et les gère

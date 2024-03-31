@@ -10,19 +10,19 @@ Exemple on MacOS:
 - to start MongoDB server run `brew services start mongodb-community@7.0`
 - to stop MongoDB server run `brew services stop mongodb-community@7.0`
 
-## Running Frontend
+## Run Frontend
 
 - Navigate to frontend folder
 - Execute `npm run dev`
 - Listening on port 5173
 
-## Running Backend Server
+## Run Backend Server
 
 - Navigate to the backend folder
 - Execute `npm run dev`
 - Listening on port 3000
 
-## Running Backend Tests
+## Run Backend Tests
 
-- If the Backend is already running on 3000, use `PORT=3001 npm run test`
-- If the Backend is not running, use `npm run test`
+- use `npm run test`
+- test running on their own database

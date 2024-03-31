@@ -11,7 +11,6 @@ import {
 
 // ------------------------------------------------------------------------
 // ----- Routes -----
-
 router.post("/", creditCtrl.createCredit);
 router.get("/:id", creditCtrl.getCreditById);
 router.put("/:id", creditCtrl.editCreditById);

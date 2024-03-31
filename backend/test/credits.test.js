@@ -7,7 +7,7 @@ import serverTest from "../serverTest.js";
 // else => use : npm run test
 // -------------------------------
 
-describe("POST to create credit", () => {
+describe("POST to create a credit", () => {
   // -- Crédit A
   it("Should create a new credit named A", (done) => {
     const newCreditA = {
@@ -73,7 +73,7 @@ describe("POST to create credit", () => {
 
 // -------------------------------
 
-describe("GET response format for Credits (A, B, C)", () => {
+describe("GET check response format", () => {
   // --- Credits A
   it("Response for credits A have correct format", (done) => {
     request(serverTest)
@@ -132,7 +132,7 @@ describe("GET response format for Credits (A, B, C)", () => {
 
 // -------------------------------
 
-describe("GET response with proper name", () => {
+describe("GET credit by ID", () => {
   // --- Credits A
   it("GET credits A => name: A", (done) => {
     request(serverTest)
@@ -179,7 +179,7 @@ describe("GET response with proper name", () => {
 
 // -------------------------------
 
-describe("PUT works properly", () => {
+describe("PUT a credits", () => {
   it("PUT credits A", (done) => {
     const requestBody = {
       number: 10,

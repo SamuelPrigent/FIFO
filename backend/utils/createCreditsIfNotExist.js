@@ -6,7 +6,7 @@ const port = process.env.PORT;
 // ==== Check if Credits already in Database ====
 async function DoesCreditsExist() {
   try {
-    // === credits A exist ?
+    // === creditsA exist ?
     const response = await fetch(`http://localhost:${port}/api/credits/a`, {
       method: "POST",
       headers: {
@@ -20,6 +20,8 @@ async function DoesCreditsExist() {
   } catch (error) {
     console.error("Error get credits A:", error);
   }
+  // creditsB ?
+  // creditsC ?
 }
 
 // ==== Create All Credits ====

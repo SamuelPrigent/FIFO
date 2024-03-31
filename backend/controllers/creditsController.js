@@ -140,7 +140,7 @@ export const editAllCredits = async (req, res, next) => {
       }),
     ]);
     // Response
-    console.log("All credits updated (controller)");
+    console.log(`All credits updated (controller)`);
     res.status(200).json({ message: "All credits updated successfully" });
   } catch (error) {
     console.error("Error updating credits:", error);

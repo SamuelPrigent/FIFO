@@ -1,11 +1,13 @@
 import fetch from "node-fetch";
+import "dotenv/config";
+const port = process.env.PORT;
 
 // Update with controller via route => /api/credits/updateCredits
 async function updateCreditsWithController() {
   try {
     // === PUT request to update credits
     const response = await fetch(
-      "http://localhost:3000/api/credits/updateCredits",
+      `http://localhost:${port}/api/credits/updateCredits`,
       {
         method: "POST",
         headers: {

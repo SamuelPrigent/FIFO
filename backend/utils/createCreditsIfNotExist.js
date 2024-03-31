@@ -1,11 +1,13 @@
 import Credit from "../models/credits.js"; // credit schema
 import fetch from "node-fetch";
+import "dotenv/config";
+const port = process.env.PORT;
 
 // ==== Check if Credits already in Database ====
 async function DoesCreditsExist() {
   try {
     // === credits A exist ?
-    const response = await fetch("http://localhost:3000/api/credits/a", {
+    const response = await fetch(`http://localhost:${port}/api/credits/a`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -7,11 +7,73 @@ import serverTest from "../serverTest.js";
 // else => use : npm run test
 // -------------------------------
 
-// ==== TEST CRUD ====
-// DELETE - them first if exist ?
-// POST - TEST CREDIT CREATION ?
+describe("POST to create credit", () => {
+  // -- Crédit A
+  it("Should create a new credit named A", (done) => {
+    const newCreditA = {
+      name: "a",
+      number: 5,
+      maxNumber: 5,
+    };
+    // console.log(newCredit);
+    request(serverTest)
+      .post("/api/credits")
+      .send(newCreditA)
+      .set("Accept", "application/json")
+      .expect(201)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body).to.have.property("name").to.equal("A");
+        expect(res.body).to.have.property("number").to.equal(5);
+        expect(res.body).to.have.property("maxNumber").to.equal(5);
+        done();
+      });
+  });
+  // -- Crédit B
+  it("Should create a new credit named B", (done) => {
+    const newCreditB = {
+      name: "b",
+      number: 5,
+      maxNumber: 5,
+    };
+    request(serverTest)
+      .post("/api/credits")
+      .send(newCreditB)
+      .set("Accept", "application/json")
+      .expect(201)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body).to.have.property("name").to.equal("B");
+        expect(res.body).to.have.property("number").to.equal(5);
+        expect(res.body).to.have.property("maxNumber").to.equal(5);
+        done();
+      });
+  });
+  // -- Crédit C
+  it("Should create a new credit named C", (done) => {
+    const newCreditC = {
+      name: "c",
+      number: 5,
+      maxNumber: 5,
+    };
+    request(serverTest)
+      .post("/api/credits")
+      .send(newCreditC)
+      .set("Accept", "application/json")
+      .expect(201)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body).to.have.property("name").to.equal("C");
+        expect(res.body).to.have.property("number").to.equal(5);
+        expect(res.body).to.have.property("maxNumber").to.equal(5);
+        done();
+      });
+  });
+});
 
-describe("Check response format for Credits (A, B C)", () => {
+// -------------------------------
+
+describe("GET response format for Credits (A, B, C)", () => {
   // --- Credits A
   it("Response for credits A have correct format", (done) => {
     request(serverTest)
@@ -70,7 +132,7 @@ describe("Check response format for Credits (A, B C)", () => {
 
 // -------------------------------
 
-describe("Response with proper name", () => {
+describe("GET response with proper name", () => {
   // --- Credits A
   it("GET credits A => name: A", (done) => {
     request(serverTest)
@@ -117,8 +179,8 @@ describe("Response with proper name", () => {
 
 // -------------------------------
 
-describe("Does PUT request works => PUT (number : x) => res (number : x)", () => {
-  it("PUT for credits A", (done) => {
+describe("PUT works properly", () => {
+  it("PUT credits A", (done) => {
     const requestBody = {
       number: 10,
     };
@@ -135,7 +197,7 @@ describe("Does PUT request works => PUT (number : x) => res (number : x)", () =>
         done(); // Fin du test
       });
   });
-  it("PUT for credits B", (done) => {
+  it("PUT credits B", (done) => {
     const requestBody = {
       number: 10,
     };
@@ -152,7 +214,7 @@ describe("Does PUT request works => PUT (number : x) => res (number : x)", () =>
         done(); // Fin du test
       });
   });
-  it("PUT for credits C", (done) => {
+  it("PUT credits C", (done) => {
     const requestBody = {
       number: 10,
     };
@@ -167,6 +229,55 @@ describe("Does PUT request works => PUT (number : x) => res (number : x)", () =>
         // Vérifier que le champ "number" a été correctement modifié
         expect(res.body).to.have.property("number").to.equal(10);
         done(); // Fin du test
+      });
+  });
+});
+
+// -------------------------------
+
+describe("DELETE Credit", () => {
+  // -- Suppression Crédit A
+  it("Should delete the credit named A", (done) => {
+    request(serverTest)
+      .delete("/api/credits/A")
+      .set("Accept", "application/json")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body)
+          .to.have.property("message")
+          .to.equal("Crédit supprimé avec succès");
+        done();
+      });
+  });
+
+  // -- Suppression Crédit B
+  it("Should delete the credit named B", (done) => {
+    request(serverTest)
+      .delete("/api/credits/B")
+      .set("Accept", "application/json")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body)
+          .to.have.property("message")
+          .to.equal("Crédit supprimé avec succès");
+        done();
+      });
+  });
+
+  // -- Suppression Crédit C
+  it("Should delete the credit named C", (done) => {
+    request(serverTest)
+      .delete("/api/credits/C")
+      .set("Accept", "application/json")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body)
+          .to.have.property("message")
+          .to.equal("Crédit supprimé avec succès");
+        done();
       });
   });
 });

@@ -19,7 +19,7 @@
     "supertest": "^6.3.4"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --timeout 5000",
     "start": "node server",
     "dev": "nodemon server"
   },

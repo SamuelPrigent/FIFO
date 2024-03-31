@@ -1,5 +1,7 @@
 import Credit from "../models/credits.js"; // credit schema
 import fetch from "node-fetch";
+import "dotenv/config";
+const port = process.env.PORT;
 
 // ==== Create 1 credit ====
 export const createCredit = async (req, res, next) => {
@@ -63,6 +65,26 @@ export const editCreditById = async (req, res, next) => {
   }
 };
 
+// ==== Delete 1 credit by (ID) ====
+export const deleteCreditById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    // Recherche en BDD et suppression
+    const credit = await Credit.findOneAndDelete({ name: id.toUpperCase() });
+    // Réponse : crédit non trouvé
+    if (!credit) {
+      return res.status(404).json({ message: "Crédit non trouvé" });
+    }
+    // Réponse
+    res
+      .status(200)
+      .json({ message: "Crédit supprimé avec succès", credit: credit });
+  } catch (error) {
+    // Gère les erreurs
+    next(error);
+  }
+};
+
 // ==== Edit All Crédits (A, B, C) ====
 // -- generate the credits with maxNumber
 function generateRandomPercentage(maxNumber) {
@@ -78,15 +100,15 @@ export const editAllCredits = async (req, res, next) => {
   try {
     // === Fetch maxCredits [A, B, C]
     // -- Fetch maxCreditsA
-    const responseA = await fetch("http://localhost:3000/api/credits/A");
+    const responseA = await fetch(`http://localhost:${port}/api/credits/A`);
     const dataA = await responseA.json();
     const maxCreditsA = dataA.maxNumber;
     // -- Fetch maxCreditsB
-    const responseB = await fetch("http://localhost:3000/api/credits/B");
+    const responseB = await fetch(`http://localhost:${port}/api/credits/B`);
     const dataB = await responseB.json();
     const maxCreditsB = dataB.maxNumber;
     // -- Fetch maxCreditsC
-    const responseC = await fetch("http://localhost:3000/api/credits/C");
+    const responseC = await fetch(`http://localhost:${port}/api/credits/C`);
     const dataC = await responseC.json();
     const maxCreditsC = dataC.maxNumber;
     // === Calculate random credits and update
@@ -95,21 +117,21 @@ export const editAllCredits = async (req, res, next) => {
     const randomCreditsC = generateRandomPercentage(maxCreditsC);
     // === PUT request to update credits
     await Promise.all([
-      fetch("http://localhost:3000/api/credits/A", {
+      fetch(`http://localhost:${port}/api/credits/A`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ number: randomCreditsA }),
       }),
-      fetch("http://localhost:3000/api/credits/B", {
+      fetch(`http://localhost:${port}/api/credits/B`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ number: randomCreditsB }),
       }),
-      fetch("http://localhost:3000/api/credits/C", {
+      fetch(`http://localhost:${port}/api/credits/C`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -129,5 +151,6 @@ export default {
   createCredit,
   getCreditById,
   editCreditById,
+  deleteCreditById,
   editAllCredits,
 };

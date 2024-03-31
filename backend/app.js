@@ -32,5 +32,4 @@ app.get("/", (req, res) => {
   res.send("Hello Waalaxy");
 });
 
-// export
 export default app;

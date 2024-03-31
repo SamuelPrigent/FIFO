@@ -208,6 +208,7 @@ function App() {
           setCreditsA(data.number); // --- ERREUR ---- prend le dessus sur le generate
         })
         .catch((error) => {
+          setCreditsA("-");
           console.error("There was a problem with the fetch operation:", error);
         });
       // == Credit B
@@ -224,6 +225,7 @@ function App() {
           setCreditsB(data.number);
         })
         .catch((error) => {
+          setCreditsB("-");
           console.error("There was a problem with the fetch operation:", error);
         });
       // == Credit C
@@ -240,6 +242,7 @@ function App() {
           setCreditsC(data.number);
         })
         .catch((error) => {
+          setCreditsC("-");
           console.error("There was a problem with the fetch operation:", error);
         });
     }
@@ -252,7 +255,6 @@ function App() {
   }, []);
   //
 
-  //
   // ============ Interval 15sec // Execute les actions ============
   useEffect(() => {
     // Action (re-check if i have enough credit)

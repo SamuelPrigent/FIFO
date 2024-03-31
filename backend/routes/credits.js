@@ -21,5 +21,8 @@ updateCreditsWithController(); // start du serveur => approvisionne en crédit
 updateCreditsWithControllerPeriodically(); // interval => approvisionne en crédit
 
 // ------------------------------------------------------------------------
+// Route for testing
+
+// ------------------------------------------------------------------------
 
 export default router;

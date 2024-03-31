@@ -7,6 +7,10 @@ import serverTest from "../serverTest.js";
 // else => use : npm run test
 // -------------------------------
 
+// ==== TEST CRUD ====
+// DELETE - them first if exist ?
+// POST - TEST CREDIT CREATION ?
+
 describe("Check response format for Credits (A, B C)", () => {
   // --- Credits A
   it("Response for credits A have correct format", (done) => {

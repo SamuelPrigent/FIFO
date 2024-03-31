@@ -5,7 +5,7 @@ async function updateCreditsWithController() {
   try {
     // === PUT request to update credits
     const response = await fetch(
-      "http://127.0.0.1:3000/api/credits/updateCredits",
+      "http://localhost:3000/api/credits/updateCredits",
       {
         method: "POST",
         headers: {

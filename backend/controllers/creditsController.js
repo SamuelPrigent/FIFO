@@ -78,15 +78,15 @@ export const editAllCredits = async (req, res, next) => {
   try {
     // === Fetch maxCredits [A, B, C]
     // -- Fetch maxCreditsA
-    const responseA = await fetch("http://127.0.0.1:3000/api/credits/A");
+    const responseA = await fetch("http://localhost:3000/api/credits/A");
     const dataA = await responseA.json();
     const maxCreditsA = dataA.maxNumber;
     // -- Fetch maxCreditsB
-    const responseB = await fetch("http://127.0.0.1:3000/api/credits/B");
+    const responseB = await fetch("http://localhost:3000/api/credits/B");
     const dataB = await responseB.json();
     const maxCreditsB = dataB.maxNumber;
     // -- Fetch maxCreditsC
-    const responseC = await fetch("http://127.0.0.1:3000/api/credits/C");
+    const responseC = await fetch("http://localhost:3000/api/credits/C");
     const dataC = await responseC.json();
     const maxCreditsC = dataC.maxNumber;
     // === Calculate random credits and update
@@ -95,21 +95,21 @@ export const editAllCredits = async (req, res, next) => {
     const randomCreditsC = generateRandomPercentage(maxCreditsC);
     // === PUT request to update credits
     await Promise.all([
-      fetch("http://127.0.0.1:3000/api/credits/A", {
+      fetch("http://localhost:3000/api/credits/A", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ number: randomCreditsA }),
       }),
-      fetch("http://127.0.0.1:3000/api/credits/B", {
+      fetch("http://localhost:3000/api/credits/B", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ number: randomCreditsB }),
       }),
-      fetch("http://127.0.0.1:3000/api/credits/C", {
+      fetch("http://localhost:3000/api/credits/C", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

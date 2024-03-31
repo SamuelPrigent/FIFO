@@ -35,7 +35,7 @@ function App() {
   function deleteCredits() {
     console.clear();
     // ==== Reset A --- update BDD + state local ====
-    fetch("http://127.0.0.1:3000/api/credits/A", {
+    fetch("http://localhost:3000/api/credits/A", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +56,7 @@ function App() {
         console.error("There was a problem with the fetch operation:", error);
       });
     // ==== Reset B --- update BDD + state local ====
-    fetch("http://127.0.0.1:3000/api/credits/B", {
+    fetch("http://localhost:3000/api/credits/B", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -77,7 +77,7 @@ function App() {
         console.error("There was a problem with the fetch operation:", error);
       });
     // ==== Reset C --- update BDD + state local ====
-    fetch("http://127.0.0.1:3000/api/credits/C", {
+    fetch("http://localhost:3000/api/credits/C", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -102,7 +102,7 @@ function App() {
   function resetCredits() {
     console.clear();
     // ==== Reset A --- update BDD + state local ====
-    fetch("http://127.0.0.1:3000/api/credits/A", {
+    fetch("http://localhost:3000/api/credits/A", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -123,7 +123,7 @@ function App() {
         console.error("There was a problem with the fetch operation:", error);
       });
     // ==== Reset B --- update BDD + state local ====
-    fetch("http://127.0.0.1:3000/api/credits/B", {
+    fetch("http://localhost:3000/api/credits/B", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +144,7 @@ function App() {
         console.error("There was a problem with the fetch operation:", error);
       });
     // ==== Reset C --- update BDD + state local ====
-    fetch("http://127.0.0.1:3000/api/credits/C", {
+    fetch("http://localhost:3000/api/credits/C", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -195,7 +195,7 @@ function App() {
     function fetchDataForLocalState() {
       // console.log("Fetch DATA");
       // == Credit A
-      fetch("http://127.0.0.1:3000/api/credits/A")
+      fetch("http://localhost:3000/api/credits/A")
         .then((response) => {
           if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -204,7 +204,7 @@ function App() {
         })
         .then((data) => {
           // Set data -> state
-          // console.log("Credit A:", data);
+          // console.log("Credit A:", data.number);
           setCreditsA(data.number); // --- ERREUR ---- prend le dessus sur le generate
         })
         .catch((error) => {
@@ -212,7 +212,7 @@ function App() {
           console.error("There was a problem with the fetch operation:", error);
         });
       // == Credit B
-      fetch("http://127.0.0.1:3000/api/credits/B")
+      fetch("http://localhost:3000/api/credits/B")
         .then((response) => {
           if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -229,7 +229,7 @@ function App() {
           console.error("There was a problem with the fetch operation:", error);
         });
       // == Credit C
-      fetch("http://127.0.0.1:3000/api/credits/C")
+      fetch("http://localhost:3000/api/credits/C")
         .then((response) => {
           if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -263,7 +263,7 @@ function App() {
         console.log("Execute: A");
         setCreditsA(creditsA - 1); // -1 crédit
         // Update la BDD + state local en conséquence
-        fetch("http://127.0.0.1:3000/api/credits/A", {
+        fetch("http://localhost:3000/api/credits/A", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -293,7 +293,7 @@ function App() {
         console.log("Execute: B");
         // setCreditsB(creditsB - 1); // -1 crédit
         // Update la BDD + state local en conséquence
-        fetch("http://127.0.0.1:3000/api/credits/B", {
+        fetch("http://localhost:3000/api/credits/B", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -323,7 +323,7 @@ function App() {
         console.log("Execute: C");
         // setCreditsC(creditsC - 1); // -1 crédit
         // Update la BDD + state local en conséquence
-        fetch("http://127.0.0.1:3000/api/credits/C", {
+        fetch("http://localhost:3000/api/credits/C", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

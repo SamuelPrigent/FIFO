@@ -7,21 +7,25 @@ import {
   updateCreditsWithController,
   updateCreditsWithControllerPeriodically,
 } from "../utils/updateCreditsPeriodically.js";
+// import createCreditsIfNotExist from "../utils/createCreditsIfNotExist.js"
 
 // ------------------------------------------------------------------------
-// --- Debut route: /api/credits/
+// === Routes ===
+// début route crédits : /api/credits/
 
 router.post("/", creditCtrl.createCredit);
 router.get("/:id", creditCtrl.getCreditById);
 router.put("/:id", creditCtrl.editCreditById);
 // Route update All
 router.post("/updateCredits", creditCtrl.editAllCredits);
+
+// ------------------------------------------------------------------------
+// === Functions ===
 // --- Update crédits
 updateCreditsWithController(); // start du serveur => approvisionne en crédit
 updateCreditsWithControllerPeriodically(); // interval => approvisionne en crédit
-
-// ------------------------------------------------------------------------
-// Route for testing
+// --- Does Credits exist ?
+// CreateAllCreditsInDatabase();
 
 // ------------------------------------------------------------------------
 

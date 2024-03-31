@@ -1,6 +1,6 @@
 import request from "supertest";
 import { expect } from "chai";
-import server from "../server.js";
+import serverTest from "../serverTest.js";
 
 // ----------- Note -----------
 // if backend already run => use : PORT=3001 npm run test
@@ -10,7 +10,7 @@ import server from "../server.js";
 describe("Check response format for Credits (A, B C)", () => {
   // --- Credits A
   it("Response for credits A have correct format", (done) => {
-    request(server)
+    request(serverTest)
       .get("/api/credits/A")
       .set("Accept", "application/json")
       .end((err, res) => {
@@ -28,7 +28,7 @@ describe("Check response format for Credits (A, B C)", () => {
   });
   // --- Credits B
   it("Response for credits B have correct format", (done) => {
-    request(server)
+    request(serverTest)
       .get("/api/credits/B")
       .set("Accept", "application/json")
       .end((err, res) => {
@@ -46,7 +46,7 @@ describe("Check response format for Credits (A, B C)", () => {
   });
   // --- Credits C
   it("Response for credits C have correct format", (done) => {
-    request(server)
+    request(serverTest)
       .get("/api/credits/C")
       .set("Accept", "application/json")
       .end((err, res) => {
@@ -69,7 +69,7 @@ describe("Check response format for Credits (A, B C)", () => {
 describe("Response with proper name", () => {
   // --- Credits A
   it("GET credits A => name: A", (done) => {
-    request(server)
+    request(serverTest)
       .get("/api/credits/A")
       .set("Accept", "application/json")
       .end((err, res) => {
@@ -83,7 +83,7 @@ describe("Response with proper name", () => {
   });
   // --- Credits B
   it("GET credits B => name: B", (done) => {
-    request(server)
+    request(serverTest)
       .get("/api/credits/B")
       .set("Accept", "application/json")
       .end((err, res) => {
@@ -97,7 +97,7 @@ describe("Response with proper name", () => {
   });
   // --- Credits C
   it("GET credits C => name: C", (done) => {
-    request(server)
+    request(serverTest)
       .get("/api/credits/C")
       .set("Accept", "application/json")
       .end((err, res) => {
@@ -118,7 +118,7 @@ describe("Does PUT request works => PUT (number : x) => res (number : x)", () =>
     const requestBody = {
       number: 10,
     };
-    request(server)
+    request(serverTest)
       .put("/api/credits/A")
       .send(requestBody) // Envoyer le corps de la requête
       .set("Accept", "application/json")
@@ -135,7 +135,7 @@ describe("Does PUT request works => PUT (number : x) => res (number : x)", () =>
     const requestBody = {
       number: 10,
     };
-    request(server)
+    request(serverTest)
       .put("/api/credits/B")
       .send(requestBody) // Envoyer le corps de la requête
       .set("Accept", "application/json")
@@ -152,7 +152,7 @@ describe("Does PUT request works => PUT (number : x) => res (number : x)", () =>
     const requestBody = {
       number: 10,
     };
-    request(server)
+    request(serverTest)
       .put("/api/credits/C")
       .send(requestBody) // Envoyer le corps de la requête
       .set("Accept", "application/json")

@@ -1,0 +1,183 @@
+#root {
+  min-height: 100vh;
+  width: 100%;
+  text-align: center;
+  background-color: white;
+}
+
+.mainContainer {
+  /* border: 2px solid red; */
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  width: 100%;
+  justify-content: center;
+  margin-top: 40px;
+  gap: 20px;
+}
+
+.sectionContainer {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  /* margin: 15px auto 15px; */
+}
+
+.buttonType {
+  padding: 8px 15px;
+  border: 2px solid black;
+}
+
+.buttonType:focus {
+  outline: none;
+}
+
+.titleElement {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.navBar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  /* background-color: #87b5ff; */
+  background-color: #f7eaf1;
+  margin-top: 0px;
+  padding: 20px;
+  box-sizing: border-box;
+  justify-content: space-between;
+  color: #001a72;
+}
+
+.appTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #001a72;
+}
+
+/* credits */
+.creditsSection {
+  display: flex;
+  gap: 40px;
+}
+
+.creditSection {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.creditSvg {
+  height: 24px;
+  margin-left: 2px;
+}
+
+.resetSvg {
+  height: 21px;
+}
+
+.crossSvg {
+  height: 18px;
+}
+
+.resetSvg2 {
+  height: 17px;
+  cursor: pointer;
+}
+
+.resetCredit {
+  cursor: pointer;
+}
+
+.queueTitleSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0px auto;
+}
+
+.alertText {
+  color: blue;
+}
+
+.creditsButtonSection {
+  display: flex;
+  gap: 17px;
+  align-items: center;
+}
+
+.buttonContainer :nth-child(1),
+.taskA {
+  user-select: none;
+  background-color: lightgreen;
+  color: darkgreen;
+  border-color: darkgreen;
+}
+
+.buttonContainer :nth-child(2),
+.taskB {
+  user-select: none;
+  background-color: lightblue;
+  color: darkblue;
+  border-color: darkblue;
+}
+
+.buttonContainer :nth-child(3),
+.taskC {
+  user-select: none;
+  background-color: lightpink;
+  color: darkred;
+  border-color: darkred;
+}
+
+.buttonContainer :nth-child(1):hover,
+.buttonContainer :nth-child(2):hover,
+.buttonContainer :nth-child(3):hover {
+  filter: brightness(0.95);
+}
+
+.queueList {
+  padding: 0px 100px;
+  margin: 10px auto;
+}
+
+.queueListComponent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  row-gap: 15px;
+}
+
+.taskContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.taskA,
+.taskB,
+.taskC {
+  border: 2px solid;
+  border-radius: 8px;
+  height: 30px;
+  width: 33px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrowQueue {
+  font-size: 22px;
+  font-weight: bold;
+}

@@ -414,15 +414,31 @@ function App() {
         setAlertB(false);
         setAlertC(false);
       }
-      // Check credits state
-      if (creditsA > 0) {
+      // Check credits for alert
+      if (creditsA > 0 || !queue.includes("A")) {
         setAlertA(false);
       }
-      if (creditsB > 0) {
+      if (creditsB > 0 || !queue.includes("B")) {
         setAlertB(false);
       }
-      if (creditsC > 0) {
+      if (creditsC > 0 || !queue.includes("C")) {
         setAlertC(false);
+      }
+      // Retire les éléments du tableau qui n'ont plus de crédits
+      if (creditsA === 0 && queue.includes("A")) {
+        console.log("remove A from array");
+        const newQueue = queue.filter((item) => item !== "A");
+        setQueue(newQueue);
+      }
+      if (creditsB === 0 && queue.includes("B")) {
+        console.log("remove B from array");
+        const newQueue = queue.filter((item) => item !== "B");
+        setQueue(newQueue);
+      }
+      if (creditsC === 0 && queue.includes("C")) {
+        console.log("remove C from array");
+        const newQueue = queue.filter((item) => item !== "C");
+        setQueue(newQueue);
       }
     }
     // => Inverval (15s) - 1s

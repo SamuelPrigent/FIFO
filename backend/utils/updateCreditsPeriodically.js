@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import "dotenv/config";
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 // Update with controller via route => /api/credits/updateCredits
 async function updateCreditsWithController() {

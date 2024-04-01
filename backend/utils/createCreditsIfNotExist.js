@@ -1,50 +1,68 @@
-import Credit from "../models/credits.js"; // credit schema
+// import Credit from "../models/credits.js"; // credit schema
 import fetch from "node-fetch";
 import "dotenv/config";
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
-// ==== Check if Credits already in Database ====
-async function DoesCreditsExist() {
+// ==== Credit exist ? ====
+async function DoesCreditExist(name) {
   try {
-    // === creditsA exist ?
-    const response = await fetch(`http://localhost:${port}/api/credits/a`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to find credits A");
-    }
+    // === credits (id) exist ?
+    const response = await fetch(
+      `http://localhost:${port}/api/credits/${name}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.ok;
   } catch (error) {
-    console.error("Error get credits A:", error);
+    console.error(`Error get credits ${name}`, error);
+    return false;
   }
-  // creditsB ?
-  // creditsC ?
 }
 
-// ==== Create All Credits ====
-export const createCreditsIfNotExist = async (req, res, next) => {
+// ==== Create the Credit ====
+async function createCreditIfNotExist(name) {
   try {
-    // recup données du corps de la requête
-    const { name, number, maxNumber } = req.body;
-    // Use shema
-    const newCredit = new Credit({
-      name,
-      number,
-      maxNumber,
-    });
-    // Enregistrez le nouvel élément dans la base de données
-    await newCredit.save();
-    // Répondre avec le nouvel élément créé
-    res.status(201).json(newCredit);
+    if ((await DoesCreditExist(name)) === false) {
+      const body = JSON.stringify({
+        name: name,
+        number: 5,
+        maxNumber: 5,
+      });
+      const response = await fetch(`http://localhost:${port}/api/credits/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: body,
+      });
+      if (response.ok) {
+        console.log(`Credits ${name} created`);
+      } else {
+        console.error(
+          "Failed to create credit:",
+          response.status,
+          response.statusText
+        );
+      }
+    }
   } catch (error) {
-    // Gérez les erreurs
-    next(error);
+    console.error(`Error while creating ${name}`, error);
   }
-};
+}
 
-export default {
-  createCreditsIfNotExist,
-};
+//  ===== Create Crédits =====
+async function createAllCreditsIfNotExist() {
+  try {
+    await createCreditIfNotExist("A");
+    await createCreditIfNotExist("B");
+    await createCreditIfNotExist("C");
+  } catch (error) {
+    console.error("Error during credits initialization", error);
+  }
+}
+
+export default createAllCreditsIfNotExist;

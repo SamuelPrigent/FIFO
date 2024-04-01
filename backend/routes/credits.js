@@ -7,10 +7,10 @@ import {
   updateCreditsWithController,
   updateCreditsWithControllerPeriodically,
 } from "../utils/updateCreditsPeriodically.js";
-// import createCreditsIfNotExist from "../utils/createCreditsIfNotExist.js"
+import createAllCreditsIfNotExist from "../utils/createCreditsIfNotExist.js";
 
 // ------------------------------------------------------------------------
-// ----- Routes -----
+// ===== Routes =====
 router.post("/", creditCtrl.createCredit);
 router.get("/:id", creditCtrl.getCreditById);
 router.put("/:id", creditCtrl.editCreditById);
@@ -18,12 +18,12 @@ router.delete("/:id", creditCtrl.deleteCreditById);
 router.post("/updateCredits", creditCtrl.editAllCredits);
 
 // ------------------------------------------------------------------------
-// ----- Functions -----
-// --- Update crédits
-updateCreditsWithController(); // start du serveur => approvisionne en crédit
-updateCreditsWithControllerPeriodically(); // interval => approvisionne en crédit
-// --- Does Credits exist ?
-// CreateAllCreditsInDatabase();
+// ===== Utils =====
+// --- Update crédits -- re-approvisionne en crédit dans la range 0.8 - 1 * maxNumber
+updateCreditsWithController(); // => start du serveur
+updateCreditsWithControllerPeriodically(); // => interval
+// --- Initialize credits in database if dont exist
+createAllCreditsIfNotExist();
 
 // ------------------------------------------------------------------------
 

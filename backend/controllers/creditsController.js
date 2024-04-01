@@ -1,22 +1,20 @@
 import Credit from "../models/credits.js"; // credit schema
 import fetch from "node-fetch";
 import "dotenv/config";
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 // ==== Create 1 credit ====
 export const createCredit = async (req, res, next) => {
   try {
-    // recup données du corps de la requête
     const { name, number, maxNumber } = req.body;
-    // Use shema
     const newCredit = new Credit({
       name,
       number,
       maxNumber,
     });
-    // Enregistrez le nouvel élément dans la base de données
+    // Enregistre en BDD
     await newCredit.save();
-    // Répondre avec le nouvel élément créé
+    // Response
     res.status(201).json(newCredit);
   } catch (error) {
     // Gérez les erreurs

@@ -1,7 +1,7 @@
 // react
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-const PORT = import.meta.env.VITE_API_PORT; // env port
+const PORT = import.meta.env.VITE_API_PORT || 3000; // env port
 // style
 import "./style/reset.css";
 import "./style/App.css";
@@ -394,25 +394,34 @@ function App() {
     }
 
     function nextAction() {
+      // Check if "action" waiting in queue
       if (queue.length > 0) {
         // -- console.log
         console.clear();
         console.log(queue);
-        // Get action type
-        const type = queue[0];
-        // Check if action have credits
-        const haveCredit = checkCreditForAction(type);
+        const type = queue[0]; // Get the next "action" (ex : "A")
+        const haveCredit = checkCreditForAction(type); // Check if we have crédits for this "action"
         // --- Execute l'action
         if (haveCredit) {
-          executeAction(type);
+          executeAction(type); // execute "action"
           setQueue((previousQueue) => previousQueue.slice(1)); // retire l'action (éxécuté) du tableau
         } else {
           setQueue((previousQueue) => previousQueue.slice(1)); // retire l'action (non éxécuté) du tableau
         }
       } else {
-        // Désactive les altertes si aucunnes action n'est en attente
+        // Pas d'alerte si aucune action n'est en atente
         setAlertA(false);
         setAlertB(false);
+        setAlertC(false);
+      }
+      // Check credits state
+      if (creditsA > 0) {
+        setAlertA(false);
+      }
+      if (creditsB > 0) {
+        setAlertB(false);
+      }
+      if (creditsC > 0) {
         setAlertC(false);
       }
     }

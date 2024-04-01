@@ -19,12 +19,14 @@ Exemple on MacOS:
 ## Run Frontend
 
 - Navigate to frontend folder
+- Execute `npm install`
 - Execute `npm run dev`
 - Listening on port 5173
 
 ## Run Backend Server
 
 - Navigate to the backend folder
+- Execute `npm install`
 - Execute `npm run dev`
 - Listening on port 3000
 

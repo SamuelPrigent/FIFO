@@ -476,7 +476,7 @@ function App() {
   return (
     <>
       <div className="navBar">
-        <div className="appTitle">Waalaxy TS</div>
+        <div className="appTitle">FIFO</div>
         <div className="creditsSection">
           <div className="creditSection">
             <div>A :</div>

@@ -259,94 +259,111 @@ function App() {
   // ============ Interval 15sec // Execute les actions ============
   useEffect(() => {
     // Action (re-check if i have enough credit)
-    function actionA() {
-      if (creditsA > 0) {
-        console.log("Execute: A");
-        setCreditsA(creditsA - 1); // -1 crédit
-        // Update la BDD + state local en conséquence
-        fetch(`http://localhost:${PORT}/api/credits/A`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ number: creditsA - 1 }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
+    async function actionA() {
+      try {
+        // GET pour récup les données les plus récentes de la base de données
+        const responseGet = await fetch(
+          `http://localhost:${PORT}/api/credits/A`
+        );
+        if (!responseGet.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await responseGet.json();
+        // Données récupérées depuis la base de données
+        const databaseCreditsA = data.number;
+        if (databaseCreditsA > 0) {
+          // Update BDD with good data
+          const responsePut = await fetch(
+            `http://localhost:${PORT}/api/credits/A`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ number: databaseCreditsA - 1 }),
             }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Credits A (updated) =>", data.number);
-            setCreditsA(creditsA - 1); // Maj state local
-          })
-          .catch((error) => {
-            console.error(
-              "There was a problem with the fetch operation:",
-              error
-            );
-          });
+          );
+          if (!responsePut.ok) {
+            throw new Error("Network response was not ok");
+          }
+          // Mettre à jour l'état local avec la nouvelle valeur des crédits
+          setCreditsA(databaseCreditsA - 1);
+          console.log("Credits A (updated) =>", databaseCreditsA - 1);
+        }
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
       }
     }
-    function actionB() {
-      if (creditsB > 0) {
-        console.log("Execute: B");
-        // setCreditsB(creditsB - 1); // -1 crédit
-        // Update la BDD + state local en conséquence
-        fetch(`http://localhost:${PORT}/api/credits/B`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ number: creditsB - 1 }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
+
+    async function actionB() {
+      try {
+        // GET pour récup les données les plus récentes de la base de données
+        const responseGet = await fetch(
+          `http://localhost:${PORT}/api/credits/B`
+        );
+        if (!responseGet.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await responseGet.json();
+        // Données récupérées depuis la base de données
+        const databaseCreditsB = data.number;
+        if (databaseCreditsB > 0) {
+          // Update BDD with good data
+          const responsePut = await fetch(
+            `http://localhost:${PORT}/api/credits/B`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ number: databaseCreditsB - 1 }),
             }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Credits B (updated) =>", data.number);
-            setCreditsB(creditsB - 1); // Maj state local
-          })
-          .catch((error) => {
-            console.error(
-              "There was a problem with the fetch operation:",
-              error
-            );
-          });
+          );
+          if (!responsePut.ok) {
+            throw new Error("Network response was not ok");
+          }
+          // Mettre à jour l'état local avec la nouvelle valeur des crédits
+          setCreditsB(databaseCreditsB - 1);
+          console.log("Credits A (updated) =>", databaseCreditsB - 1);
+        }
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
       }
     }
-    function actionC() {
-      if (creditsC > 0) {
-        console.log("Execute: C");
-        // setCreditsC(creditsC - 1); // -1 crédit
-        // Update la BDD + state local en conséquence
-        fetch(`http://localhost:${PORT}/api/credits/C`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ number: creditsC - 1 }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
+
+    async function actionC() {
+      try {
+        // GET pour récup les données les plus récentes de la base de données
+        const responseGet = await fetch(
+          `http://localhost:${PORT}/api/credits/C`
+        );
+        if (!responseGet.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await responseGet.json();
+        // Données récupérées depuis la base de données
+        const databaseCreditsC = data.number;
+        if (databaseCreditsC > 0) {
+          // Update BDD with good data
+          const responsePut = await fetch(
+            `http://localhost:${PORT}/api/credits/C`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ number: databaseCreditsC - 1 }),
             }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Credits C (updated) =>", data.number);
-            setCreditsC(creditsC - 1); // Maj state local
-          })
-          .catch((error) => {
-            console.error(
-              "There was a problem with the fetch operation:",
-              error
-            );
-          });
+          );
+          if (!responsePut.ok) {
+            throw new Error("Network response was not ok");
+          }
+          // Mettre à jour l'état local avec la nouvelle valeur des crédits
+          setCreditsC(databaseCreditsC - 1);
+          console.log("Credits A (updated) =>", databaseCreditsC - 1);
+        }
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
       }
     }
 
@@ -398,7 +415,7 @@ function App() {
       if (queue.length > 0) {
         // -- console.log
         console.clear();
-        console.log(queue);
+        // console.log(queue);
         const type = queue[0]; // Get the next "action" (ex : "A")
         const haveCredit = checkCreditForAction(type); // Check if we have crédits for this "action"
         // --- Execute l'action

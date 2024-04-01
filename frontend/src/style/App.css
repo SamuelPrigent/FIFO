@@ -42,15 +42,14 @@
 .titleElement {
   font-size: 16px;
   font-weight: bold;
-  /* margin-top: 30px; */
-  /* margin-bottom: 15px; */
 }
 
 .navBar {
   display: flex;
   align-items: center;
   width: 100%;
-  background-color: #87b5ff;
+  /* background-color: #87b5ff; */
+  background-color: #e0e0e0;
   margin-top: 0px;
   padding: 20px;
   box-sizing: border-box;
@@ -82,7 +81,7 @@
 }
 
 .resetSvg {
-  height: 22px;
+  height: 21px;
 }
 
 .crossSvg {
@@ -106,7 +105,7 @@
 }
 
 .alertText {
-  color: #084fd1;
+  color: blue;
 }
 
 .creditsButtonSection {
@@ -146,7 +145,7 @@
 }
 
 .queueList {
-  padding: 0px 20px;
+  padding: 0px 100px;
   margin: 10px auto;
 }
 
@@ -169,7 +168,7 @@
 .taskA,
 .taskB,
 .taskC {
-  border: 2px solid black;
+  border: 2px solid;
   border-radius: 8px;
   height: 30px;
   width: 33px;
@@ -180,5 +179,5 @@
 
 .arrowQueue {
   font-size: 22px;
-  /* font-weight: bold; */
+  font-weight: bold;
 }

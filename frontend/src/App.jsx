@@ -178,8 +178,10 @@ function App() {
       <div className="queueListComponent">
         {queue.map((item, index) => (
           <React.Fragment key={index}>
-            {index !== 0 && <span> -&gt; </span>}
-            <span>{item}</span>
+            <div className="taskContainer">
+              {index !== 0 && <span className="arrowQueue"> -&gt; </span>}
+              <span className={`task${item}`}>{item}</span>
+            </div>
           </React.Fragment>
         ))}
       </div>
@@ -324,7 +326,7 @@ function App() {
           }
           // Mettre à jour l'état local avec la nouvelle valeur des crédits
           setCreditsB(databaseCreditsB - 1);
-          console.log("Credits A (updated) =>", databaseCreditsB - 1);
+          console.log("Credits B (updated) =>", databaseCreditsB - 1);
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -360,7 +362,7 @@ function App() {
           }
           // Mettre à jour l'état local avec la nouvelle valeur des crédits
           setCreditsC(databaseCreditsC - 1);
-          console.log("Credits A (updated) =>", databaseCreditsC - 1);
+          console.log("Credits C (updated) =>", databaseCreditsC - 1);
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -443,17 +445,17 @@ function App() {
       }
       // Retire les éléments du tableau qui n'ont plus de crédits
       if (creditsA === 0 && queue.includes("A")) {
-        console.log("remove A from array");
+        console.log("Remove A from queue");
         const newQueue = queue.filter((item) => item !== "A");
         setQueue(newQueue);
       }
       if (creditsB === 0 && queue.includes("B")) {
-        console.log("remove B from array");
+        console.log("Remove B from queue");
         const newQueue = queue.filter((item) => item !== "B");
         setQueue(newQueue);
       }
       if (creditsC === 0 && queue.includes("C")) {
-        console.log("remove C from array");
+        console.log("Remove C from queue");
         const newQueue = queue.filter((item) => item !== "C");
         setQueue(newQueue);
       }

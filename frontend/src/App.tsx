@@ -134,7 +134,7 @@ function App() {
   }, []);
   //
 
-  // ============ Interval 15sec // Execute les actions ============
+  // ============ Interval 1sec // Execute les actions ============
   useEffect(() => {
     // Action (fetch data in Database before -1)
     async function actionA() {
@@ -260,23 +260,23 @@ function App() {
         setAlertC(false);
       }
       // Retire les éléments du tableau qui n'ont plus de crédits
-      if (creditsA === 0 && queue.includes("A")) {
+      if (queue[0] === "A" && creditsA === 0 && queue.includes("A")) {
         console.log("Remove A from queue");
         const newQueue = queue.filter((item) => item !== "A");
         setQueue(newQueue);
       }
-      if (creditsB === 0 && queue.includes("B")) {
+      if (queue[0] === "B" && creditsB === 0 && queue.includes("B")) {
         console.log("Remove B from queue");
         const newQueue = queue.filter((item) => item !== "B");
         setQueue(newQueue);
       }
-      if (creditsC === 0 && queue.includes("C")) {
+      if (queue[0] === "C" && creditsC === 0 && queue.includes("C")) {
         console.log("Remove C from queue");
         const newQueue = queue.filter((item) => item !== "C");
         setQueue(newQueue);
       }
     }
-    // => Inverval (15s) - 1s
+    // => Inverval (1s)
     const intervalIdNextAction = setInterval(nextAction, 1000); // nextAction()
     return () => {
       clearInterval(intervalIdNextAction);

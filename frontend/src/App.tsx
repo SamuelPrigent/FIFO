@@ -21,155 +21,79 @@ function App() {
   const [alertB, setAlertB] = useState<boolean>(false);
   const [alertC, setAlertC] = useState<boolean>(false);
 
-  // reset queue
-  function resetQueue() {
-    setQueue([]);
-    // setAlertA(false);
-    // setAlertB(false);
-    // setAlertC(false);
+  // ============ Request functions ============
+
+  interface CreditData {
+    _id: string;
+    name: string;
+    number: number;
+    maxNumber: number;
+    __v: number;
   }
 
-  // reset crédits and delete credits -- only for dev mode
+  // fetch data return data
+  async function fetchCreditsData(name: string): Promise<CreditData> {
+    return fetch(`http://localhost:${PORT}/api/credits/${name}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json() as Promise<CreditData>;
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+        throw error;
+      });
+  }
+
+  function putCreditsData(name: string, number: number) {
+    fetch(`http://localhost:${PORT}/api/credits/${name}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ number: number }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        eval(`setCredits${name}(${number})`);
+        console.log(`Credits ${name} (updated) =>`, data.number);
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  }
+
+  // ============================
+
+  function resetQueue() {
+    setQueue([]);
+  }
+
   function deleteCredits() {
     console.clear();
-    // ==== Reset A --- update BDD + state local ====
-    fetch(`http://localhost:${PORT}/api/credits/A`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ number: 0 }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Credits A (updated) =>", data.number);
-        setCreditsA(0); // Maj state local
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
-      });
-    // ==== Reset B --- update BDD + state local ====
-    fetch(`http://localhost:${PORT}/api/credits/B`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ number: 0 }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Credits B (updated) =>", data.number);
-        setCreditsB(0); // Maj state local
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
-      });
-    // ==== Reset C --- update BDD + state local ====
-    fetch(`http://localhost:${PORT}/api/credits/C`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ number: 0 }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Credits C (updated) =>", data.number);
-        setCreditsC(0); // Maj state local
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
-      });
+    putCreditsData("A", 0);
+    putCreditsData("B", 0);
+    putCreditsData("C", 0);
   }
 
   function resetCredits() {
     console.clear();
-    // ==== Reset A --- update BDD + state local ====
-    fetch(`http://localhost:${PORT}/api/credits/A`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ number: 5 }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Credits A (updated) =>", data.number);
-        setCreditsA(5); // Maj state local
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
-      });
-    // ==== Reset B --- update BDD + state local ====
-    fetch(`http://localhost:${PORT}/api/credits/B`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ number: 5 }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Credits B (updated) =>", data.number);
-        setCreditsB(5); // Maj state local
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
-      });
-    // ==== Reset C --- update BDD + state local ====
-    fetch(`http://localhost:${PORT}/api/credits/C`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ number: 5 }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Credits C (updated) =>", data.number);
-        setCreditsC(5); // Maj state local
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
-      });
+    putCreditsData("A", 5);
+    putCreditsData("B", 5);
+    putCreditsData("C", 5);
   }
 
-  // add action in queue
   function addInQueue(actionType: string) {
     setQueue((previousQueue) => [...previousQueue, actionType]);
   }
 
-  // mets en forme visuellement la queue actuelle
+  // Mise en forme de la queue en composant
   function QueueListComponent({ queue }: { queue: string[] }) {
     return (
       <div className="queueListComponent">
@@ -190,65 +114,20 @@ function App() {
     map: PropTypes.string,
   };
 
-  // ====== (Execute 1x - on reload) ======
+  // ====== Fetch data for local state (on reload + every 10sec) ======
   useEffect(() => {
-    function fetchDataForLocalState() {
-      // console.log("Fetch DATA");
-      // == Credit A
-      fetch(`http://localhost:${PORT}/api/credits/A`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          // Set data -> state
-          // console.log("Credit A:", data.number);
-          setCreditsA(data.number); // --- ERREUR ---- prend le dessus sur le generate
-        })
-        .catch((error) => {
-          setCreditsA("-");
-          console.error("There was a problem with the fetch operation:", error);
-        });
-      // == Credit B
-      fetch(`http://localhost:${PORT}/api/credits/B`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          // Set data -> state
-          // console.log("Credit B data:", data);
-          setCreditsB(data.number);
-        })
-        .catch((error) => {
-          setCreditsB("-");
-          console.error("There was a problem with the fetch operation:", error);
-        });
-      // == Credit C
-      fetch(`http://localhost:${PORT}/api/credits/C`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          // Set data -> state
-          // console.log("Credit C data:", data);
-          setCreditsC(data.number);
-        })
-        .catch((error) => {
-          setCreditsC("-");
-          console.error("There was a problem with the fetch operation:", error);
-        });
+    async function fetchDataForLocalState() {
+      const creditsAData = await fetchCreditsData("A"); // fetch credits A data
+      setCreditsA(creditsAData.number); // update local state
+      const creditsBData = await fetchCreditsData("B"); // fetch credits B data
+      setCreditsB(creditsBData.number); // update local state
+      const creditsCData = await fetchCreditsData("C"); // fetch credits B data
+      setCreditsC(creditsCData.number); // update local state
     }
-    fetchDataForLocalState();
-    // ======= (Fetch every 15s) =======
-    const intervalId = setInterval(fetchDataForLocalState, 15000);
+    fetchDataForLocalState(); // on reload
+    //
+    // ======= (Interval on Fetch every 10s) =======
+    const intervalId = setInterval(fetchDataForLocalState, 10000);
     return () => {
       clearInterval(intervalId);
     };
@@ -257,36 +136,14 @@ function App() {
 
   // ============ Interval 15sec // Execute les actions ============
   useEffect(() => {
-    // Action (re-check if i have enough credit)
+    // Action (fetch data in Database before -1)
     async function actionA() {
       try {
-        // GET pour récup les données les plus récentes de la base de données
-        const responseGet = await fetch(
-          `http://localhost:${PORT}/api/credits/A`
-        );
-        if (!responseGet.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await responseGet.json();
-        // Données récupérées depuis la base de données
-        const databaseCreditsA = data.number;
+        const creditsData = await fetchCreditsData("A"); // get data : fetchCreditsData("A")
+        const databaseCreditsA = creditsData.number; // get : data.number
         if (databaseCreditsA > 0) {
-          // Update BDD with good data
-          const responsePut = await fetch(
-            `http://localhost:${PORT}/api/credits/A`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ number: databaseCreditsA - 1 }),
-            }
-          );
-          if (!responsePut.ok) {
-            throw new Error("Network response was not ok");
-          }
-          // Mettre à jour l'état local avec la nouvelle valeur des crédits
-          setCreditsA(databaseCreditsA - 1);
+          putCreditsData("A", databaseCreditsA - 1); // Update Database with data
+          setCreditsA(databaseCreditsA - 1); // Updata state local
           console.log("Credits A (updated) =>", databaseCreditsA - 1);
         }
       } catch (error) {
@@ -296,33 +153,11 @@ function App() {
 
     async function actionB() {
       try {
-        // GET pour récup les données les plus récentes de la base de données
-        const responseGet = await fetch(
-          `http://localhost:${PORT}/api/credits/B`
-        );
-        if (!responseGet.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await responseGet.json();
-        // Données récupérées depuis la base de données
-        const databaseCreditsB = data.number;
+        const creditsData = await fetchCreditsData("B"); // get data : fetchCreditsData("B")
+        const databaseCreditsB = creditsData.number; // get : data.number
         if (databaseCreditsB > 0) {
-          // Update BDD with good data
-          const responsePut = await fetch(
-            `http://localhost:${PORT}/api/credits/B`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ number: databaseCreditsB - 1 }),
-            }
-          );
-          if (!responsePut.ok) {
-            throw new Error("Network response was not ok");
-          }
-          // Mettre à jour l'état local avec la nouvelle valeur des crédits
-          setCreditsB(databaseCreditsB - 1);
+          putCreditsData("B", databaseCreditsB - 1); // Update Database with data
+          setCreditsB(databaseCreditsB - 1); // Updata state local
           console.log("Credits B (updated) =>", databaseCreditsB - 1);
         }
       } catch (error) {
@@ -332,33 +167,11 @@ function App() {
 
     async function actionC() {
       try {
-        // GET pour récup les données les plus récentes de la base de données
-        const responseGet = await fetch(
-          `http://localhost:${PORT}/api/credits/C`
-        );
-        if (!responseGet.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await responseGet.json();
-        // Données récupérées depuis la base de données
-        const databaseCreditsC = data.number;
+        const creditsData = await fetchCreditsData("C"); // get data : fetchCreditsData("C")
+        const databaseCreditsC = creditsData.number; // get : data.number
         if (databaseCreditsC > 0) {
-          // Update BDD with good data
-          const responsePut = await fetch(
-            `http://localhost:${PORT}/api/credits/C`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ number: databaseCreditsC - 1 }),
-            }
-          );
-          if (!responsePut.ok) {
-            throw new Error("Network response was not ok");
-          }
-          // Mettre à jour l'état local avec la nouvelle valeur des crédits
-          setCreditsC(databaseCreditsC - 1);
+          putCreditsData("C", databaseCreditsC - 1); // Update Database with data
+          setCreditsC(databaseCreditsC - 1); // Updata state local
           console.log("Credits C (updated) =>", databaseCreditsC - 1);
         }
       } catch (error) {
@@ -563,7 +376,6 @@ function App() {
           ) : null}
         </div>
       </div>
-      {/* fin main container */}
     </>
   );
 }

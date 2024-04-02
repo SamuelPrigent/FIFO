@@ -1,19 +1,21 @@
 # React + NodeJS
 
+Frontend: React with TypeScript
+Backend: Node.js with JavaScript
+
 ## Configuration of Local Database
 
-- This guide explains how to configure your machine to use a local database with MongoDB Atlas: [MongoDB Documentation](https://www.mongodb.com/docs/manual/administration/configuration/#std-label-base-config)
+- This guide explains how to configure your machine to use a local database with MongoDB Compass : [MongoDB Documentation](https://www.mongodb.com/docs/manual/administration/configuration/#std-label-base-config)
+- **Create two databases : "waalaxy" and "waalaxy_test"**. They correspond to the environment variables in the .env file: `MongoURL` and `MongoURL_test`.
 
-Exemple on MacOS:
+Run MongoDB Compass (on MacOS):
 
 - to start MongoDB server run `brew services start mongodb-community@7.0`
 - to stop MongoDB server run `brew services stop mongodb-community@7.0`
 
 ## .env configuration
 
-- Specify Databases URL that you created on MongoDB Compass in backend (.env)
-- `MongoURL` is a local database for the project
-- `MongoURL_test` is a local database for testing
+- You dont have to change `MongoURL` and `MongoURL_test` in backend (.env) if you named your databases as mentioned in previous section.
 - `PORT` and `VITE_API_PORT` respectively from backend (.env) and frontend (.env) have to be the same.
 
 ## Run Frontend
@@ -23,7 +25,7 @@ Exemple on MacOS:
 - Execute `npm run dev`
 - Listening on port 5173
 
-## Run Backend Server
+## Run Backend
 
 - Navigate to the backend folder
 - Execute `npm install`
@@ -33,4 +35,3 @@ Exemple on MacOS:
 ## Run Backend Tests
 
 - use `npm run test`
-- running on their own database

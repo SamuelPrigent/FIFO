@@ -126,8 +126,8 @@ function App() {
     }
     fetchDataForLocalState(); // on reload
     //
-    // ======= (Interval on Fetch every 10s) =======
-    const intervalId = setInterval(fetchDataForLocalState, 10000);
+    // ======= (Interval on Fetch every 30s) =======
+    const intervalId = setInterval(fetchDataForLocalState, 30 * 1000);
     return () => {
       clearInterval(intervalId);
     };
@@ -144,7 +144,6 @@ function App() {
         if (databaseCreditsA > 0) {
           putCreditsData("A", databaseCreditsA - 1); // Update Database with data
           setCreditsA(databaseCreditsA - 1); // Updata state local
-          console.log("Credits A (updated) =>", databaseCreditsA - 1);
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -158,7 +157,6 @@ function App() {
         if (databaseCreditsB > 0) {
           putCreditsData("B", databaseCreditsB - 1); // Update Database with data
           setCreditsB(databaseCreditsB - 1); // Updata state local
-          console.log("Credits B (updated) =>", databaseCreditsB - 1);
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -172,7 +170,6 @@ function App() {
         if (databaseCreditsC > 0) {
           putCreditsData("C", databaseCreditsC - 1); // Update Database with data
           setCreditsC(databaseCreditsC - 1); // Updata state local
-          console.log("Credits C (updated) =>", databaseCreditsC - 1);
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -307,7 +304,7 @@ function App() {
             <img src={credit} className="creditSvg" />
           </div>
         </div>
-        {/* only for dev mode */}
+        {/* button for dev mode */}
         <div className="creditsButtonSection">
           <div className="resetCredit" onClick={() => deleteCredits()}>
             <img src={cross} className="crossSvg" />

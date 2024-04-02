@@ -1,7 +1,8 @@
+// Database
 import mongoose from "mongoose";
 import "dotenv/config";
 
-// Connexion
+// Connexion to database
 mongoose
   .connect(process.env.MongoURL)
   .then(() => console.log("Connexion à MongoDB réussie !"))
@@ -26,6 +27,8 @@ const normalizePort = (val) => {
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
+const server = http.createServer(app);
+
 // errorHandler recherche les erreurs et les gère
 const errorHandler = (error) => {
   if (error.syscall !== "listen") {
@@ -47,8 +50,6 @@ const errorHandler = (error) => {
       throw error;
   }
 };
-
-const server = http.createServer(app);
 
 // ecoute les évênement et nous indique dans la console sur quel port ils sont écouté
 server.on("error", errorHandler);

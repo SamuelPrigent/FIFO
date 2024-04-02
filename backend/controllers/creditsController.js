@@ -121,6 +121,7 @@ export const editAllCredits = async (req, res, next) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ number: randomCreditsA }),
+        // body: JSON.stringify({ number: 10 }),
       }),
       fetch(`http://localhost:${port}/api/credits/B`, {
         method: "PUT",
@@ -128,6 +129,7 @@ export const editAllCredits = async (req, res, next) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ number: randomCreditsB }),
+        // body: JSON.stringify({ number: 10 }),
       }),
       fetch(`http://localhost:${port}/api/credits/C`, {
         method: "PUT",
@@ -135,6 +137,7 @@ export const editAllCredits = async (req, res, next) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ number: randomCreditsC }),
+        // body: JSON.stringify({ number: 10 }),
       }),
     ]);
     // Response

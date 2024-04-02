@@ -1,12 +1,9 @@
 # React + NodeJS
 
-Frontend: React with TypeScript
-Backend: Node.js with JavaScript
-
 ## Configuration of Local Database
 
 - This guide explains how to configure your machine to use a local database with MongoDB Compass : [MongoDB Documentation](https://www.mongodb.com/docs/manual/administration/configuration/#std-label-base-config)
-- **Create two databases : "waalaxy" and "waalaxy_test"**. They correspond to the environment variables in the .env file: `MongoURL` and `MongoURL_test`.
+- **Create two databases : "waalaxy" and "waalaxy_test"**. They correspond to the environment variables in backend (.env) file: `MongoURL` and `MongoURL_test`.
 
 Run MongoDB Compass (on MacOS):
 
@@ -34,4 +31,5 @@ Run MongoDB Compass (on MacOS):
 
 ## Run Backend Tests
 
+- Navigate to the backend folder
 - use `npm run test`

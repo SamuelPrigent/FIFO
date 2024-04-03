@@ -28,6 +28,7 @@ Run MongoDB Compass (on MacOS):
 - Execute `npm install`
 - Execute `npm run dev`
 - Listening on port 3000
+- After any change run a new build with `npm run build` to compile
 
 ## Run Backend Tests
 

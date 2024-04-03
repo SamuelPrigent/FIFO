@@ -5,7 +5,7 @@ dotenv.config();
 
 // Connexion to database
 mongoose.connect(process.env.MongoURL_test as string);
-// .then(() => console.log("Connexion à MongoDB réussie !"))
+// .then(() => console.log("Connexion à MongoDB réussie !"));
 // .catch(() => console.log("Connexion à MongoDB echec !"));
 
 // Server

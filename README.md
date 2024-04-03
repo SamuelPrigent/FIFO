@@ -26,9 +26,10 @@ Run MongoDB Compass (on MacOS):
 
 - Navigate to the backend folder
 - Execute `npm install`
+- Execute `npm run build`
 - Execute `npm run dev`
 - Listening on port 3000
-- After any change run a new build with `npm run build` to compile
+- Working on backend ? use `npm run watch`, which compiles your code automatically on changes.
 
 ## Run Backend Tests
 

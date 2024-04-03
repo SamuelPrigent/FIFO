@@ -28,11 +28,12 @@
     "typescript": "^5.4.3"
   },
   "scripts": {
-    "clean": "npx tsc --build --clean",
-    "build": "npx tsc --build",
     "start": "node dist/server.js",
     "dev": "npx nodemon dist/server.js",
-    "test": "mocha src/test/credits.test.js"
+    "test": "mocha src/test/credits.test.js",
+    "clean": "npx tsc --build --clean",
+    "build": "npx tsc --build",
+    "watch": "npx tsx --watch"
   },
   "version": "1.0.0",
   "license": "ISC",

@@ -167,6 +167,8 @@ function App() {
               );
               setCreditsA(updatedCreditsData.number - 1);
             });
+        } else {
+          setAlertA(true);
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -192,6 +194,8 @@ function App() {
               );
               setCreditsB(updatedCreditsData.number - 1);
             });
+        } else {
+          setAlertB(true);
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -217,6 +221,8 @@ function App() {
               );
               setCreditsC(updatedCreditsData.number - 1);
             });
+        } else {
+          setAlertC(true);
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -235,51 +241,15 @@ function App() {
       }
     }
 
-    function checkCreditForAction(nextActionInQueue: string) {
-      if (nextActionInQueue === "A" && creditsA !== null) {
-        if (typeof creditsA === "number" && creditsA > 0) {
-          return true;
-        } else {
-          // alerte
-          console.log("Crédit insuffisant: A");
-          setAlertA(true);
-          return false;
-        }
-      }
-      if (nextActionInQueue === "B" && creditsB !== null) {
-        if (typeof creditsB === "number" && creditsB > 0) {
-          return true;
-        } else {
-          console.log("Crédit insuffisant: B");
-          setAlertB(true);
-          return false;
-        }
-      }
-      if (nextActionInQueue === "C" && creditsC !== null) {
-        if (typeof creditsC === "number" && creditsC > 0) {
-          return true;
-        } else {
-          console.log("Crédit insuffisant: C");
-          setAlertC(true);
-          return false;
-        }
-      }
-    }
-
     function nextAction() {
       // Check if "action" waiting in queue
       if (queue.length > 0) {
         // console.log(queue);
         console.clear();
         const nextActionInQueue = queue[0]; // Get the next "action" (ex : "A")
-        const haveCredit = checkCreditForAction(nextActionInQueue); // Check if we have crédits for this "action"
         // --- Execute l'action
-        if (haveCredit) {
-          executeAction(nextActionInQueue); // execute "action"
-          setQueue((previousQueue) => previousQueue.slice(1)); // retire l'action (éxécuté) du tableau
-        } else {
-          setQueue((previousQueue) => previousQueue.slice(1)); // retire l'action (non éxécuté) du tableau
-        }
+        executeAction(nextActionInQueue); // execute "action"
+        setQueue((previousQueue) => previousQueue.slice(1)); // retire l'action (éxécuté) du tableau
       } else {
         // Pas d'alerte si aucune action n'est en atente
         setAlertA(false);

@@ -43,16 +43,26 @@ export const getCreditById = async (req, res, next) => {
 // ==== Edit 1 credit ====
 export const editCreditById = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    // Recherche en BDD
-    const credit = await Credit.findOne({ name: id.toUpperCase() }); // Convertir en majuscules pour la correspondance
+    // req
+    const { id } = req.params; // credit name (ex : "A")
+    const { number, __v } = req.body;
+    const credit = await Credit.findOne({ name: id.toUpperCase() }); // Recherche en BDD
+
     // Response : crédit non trouvé
     if (!credit) {
       return res.status(404).json({ message: "Crédit non trouvé" });
     }
+    // Vérification de la version (si "-1" update sans verification)
+    if (credit.__v !== __v && __v !== -1) {
+      return res
+        .status(409)
+        .json({ message: "La version du crédit ne correspond pas" });
+    }
     // Update credit.number
-    const { number } = req.body;
     credit.number = number;
+    // Update version number "__v" of data
+    const newVersion = parseFloat((credit.__v + 0.01).toFixed(2));
+    credit.__v = newVersion;
     // Save en BDD
     await credit.save();
     // Response
@@ -101,14 +111,17 @@ export const editAllCredits = async (req, res, next) => {
     const responseA = await fetch(`http://localhost:${port}/api/credits/A`);
     const dataA = await responseA.json();
     const maxCreditsA = dataA.maxNumber;
+    const versionCreditsA = dataA.__v;
     // -- Fetch maxCreditsB
     const responseB = await fetch(`http://localhost:${port}/api/credits/B`);
     const dataB = await responseB.json();
     const maxCreditsB = dataB.maxNumber;
+    const versionCreditsB = dataB.__v;
     // -- Fetch maxCreditsC
     const responseC = await fetch(`http://localhost:${port}/api/credits/C`);
     const dataC = await responseC.json();
     const maxCreditsC = dataC.maxNumber;
+    const versionCreditsC = dataC.__v;
     // === Calculate random credits and update
     const randomCreditsA = generateRandomPercentage(maxCreditsA);
     const randomCreditsB = generateRandomPercentage(maxCreditsB);
@@ -120,24 +133,24 @@ export const editAllCredits = async (req, res, next) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ number: randomCreditsA }),
-        // body: JSON.stringify({ number: 10 }),
+        body: JSON.stringify({ number: randomCreditsA, __v: versionCreditsA }),
+        // body: JSON.stringify({ number: 100, __v: versionCreditsA }),
       }),
       fetch(`http://localhost:${port}/api/credits/B`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ number: randomCreditsB }),
-        // body: JSON.stringify({ number: 10 }),
+        body: JSON.stringify({ number: randomCreditsB, __v: versionCreditsB }),
+        // body: JSON.stringify({ number: 100, __v: versionCreditsB }),
       }),
       fetch(`http://localhost:${port}/api/credits/C`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ number: randomCreditsC }),
-        // body: JSON.stringify({ number: 10 }),
+        body: JSON.stringify({ number: randomCreditsC, __v: versionCreditsC }),
+        // body: JSON.stringify({ number: 100, __v: versionCreditsC }),
       }),
     ]);
     // Response

@@ -136,6 +136,7 @@ describe("PUT/:id credits", () => {
   it("Credits A updated", (done) => {
     const requestBody = {
       number: 10,
+      __v: -1,
     };
     request(serverTest)
       .put("/api/credits/A")
@@ -153,6 +154,7 @@ describe("PUT/:id credits", () => {
   it("Credits B updated", (done) => {
     const requestBody = {
       number: 10,
+      __v: -1,
     };
     request(serverTest)
       .put("/api/credits/B")
@@ -170,6 +172,7 @@ describe("PUT/:id credits", () => {
   it("Credits C updated", (done) => {
     const requestBody = {
       number: 10,
+      __v: -1,
     };
     request(serverTest)
       .put("/api/credits/C")

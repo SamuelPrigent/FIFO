@@ -46,27 +46,38 @@ function App() {
       });
   }
 
-  function putCreditsData(name: string, number: number) {
-    fetch(`http://localhost:${PORT}/api/credits/${name}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ number: number }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
+  // function putCreditsData(name: string, number: number, version: number) {
+  function putCreditsData(
+    name: string,
+    number: number,
+    version: number
+  ): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      fetch(`http://localhost:${PORT}/api/credits/${name}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ number: number, __v: version }),
       })
-      .then((data) => {
-        eval(`setCredits${name}(${number})`);
-        console.log(`Credits ${name} (updated) =>`, data.number);
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
-      });
+        .then((response) => {
+          if (!response.ok) {
+            reject(new Error("Network response was not ok"));
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data && "number" in data) {
+            eval(`setCredits${name}(${number})`);
+            console.log(`Credits ${name} (updated) =>`, data.number);
+          }
+          resolve();
+        })
+        .catch((error) => {
+          console.error("There was a problem with the fetch operation:", error);
+          reject(error);
+        });
+    });
   }
 
   // ============================
@@ -77,16 +88,16 @@ function App() {
 
   function deleteCredits() {
     console.clear();
-    putCreditsData("A", 0);
-    putCreditsData("B", 0);
-    putCreditsData("C", 0);
+    putCreditsData("A", 0, -1);
+    putCreditsData("B", 0, -1);
+    putCreditsData("C", 0, -1);
   }
 
   function resetCredits() {
     console.clear();
-    putCreditsData("A", 5);
-    putCreditsData("B", 5);
-    putCreditsData("C", 5);
+    putCreditsData("A", 5, -1);
+    putCreditsData("B", 5, -1);
+    putCreditsData("C", 5, -1);
   }
 
   function addInQueue(actionType: string) {
@@ -126,8 +137,8 @@ function App() {
     }
     fetchDataForLocalState(); // on reload
     //
-    // ======= (Interval on Fetch every 30s) =======
-    const intervalId = setInterval(fetchDataForLocalState, 30 * 1000);
+    // ======= (Interval on Fetch every 25s) =======
+    const intervalId = setInterval(fetchDataForLocalState, 25 * 1000);
     return () => {
       clearInterval(intervalId);
     };
@@ -140,10 +151,22 @@ function App() {
     async function actionA() {
       try {
         const creditsData = await fetchCreditsData("A"); // get data : fetchCreditsData("A")
-        const databaseCreditsA = creditsData.number; // get : data.number
+        const databaseCreditsA = creditsData.number; // get : data.number // check via database
         if (databaseCreditsA > 0) {
-          putCreditsData("A", databaseCreditsA - 1); // Update Database with data
-          setCreditsA(databaseCreditsA - 1); // Updata state local
+          putCreditsData("A", databaseCreditsA - 1, creditsData.__v) // Update Database with data
+            .then(() => {
+              setCreditsA(databaseCreditsA - 1); // PUT réussis ==> update local state
+            })
+            .catch(async () => {
+              console.log("Credits A (retry-update)");
+              const updatedCreditsData = await fetchCreditsData("A");
+              putCreditsData(
+                "A",
+                updatedCreditsData.number - 1,
+                updatedCreditsData.__v
+              );
+              setCreditsA(updatedCreditsData.number - 1);
+            });
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -153,10 +176,22 @@ function App() {
     async function actionB() {
       try {
         const creditsData = await fetchCreditsData("B"); // get data : fetchCreditsData("B")
-        const databaseCreditsB = creditsData.number; // get : data.number
+        const databaseCreditsB = creditsData.number; // get : data.number // check via database
         if (databaseCreditsB > 0) {
-          putCreditsData("B", databaseCreditsB - 1); // Update Database with data
-          setCreditsB(databaseCreditsB - 1); // Updata state local
+          putCreditsData("B", databaseCreditsB - 1, creditsData.__v) // Update Database with data
+            .then(() => {
+              setCreditsB(databaseCreditsB - 1); // PUT réussis ==> update local state
+            })
+            .catch(async () => {
+              console.log("Credits B (retry-update)");
+              const updatedCreditsData = await fetchCreditsData("B");
+              putCreditsData(
+                "B",
+                updatedCreditsData.number - 1,
+                updatedCreditsData.__v
+              );
+              setCreditsB(updatedCreditsData.number - 1);
+            });
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -166,30 +201,42 @@ function App() {
     async function actionC() {
       try {
         const creditsData = await fetchCreditsData("C"); // get data : fetchCreditsData("C")
-        const databaseCreditsC = creditsData.number; // get : data.number
+        const databaseCreditsC = creditsData.number; // get : data.number // check via database
         if (databaseCreditsC > 0) {
-          putCreditsData("C", databaseCreditsC - 1); // Update Database with data
-          setCreditsC(databaseCreditsC - 1); // Updata state local
+          putCreditsData("C", databaseCreditsC - 1, creditsData.__v) // Update Database with data
+            .then(() => {
+              setCreditsC(databaseCreditsC - 1); // PUT réussis ==> update local state
+            })
+            .catch(async () => {
+              console.log("Credits C (retry-update)");
+              const updatedCreditsData = await fetchCreditsData("C");
+              putCreditsData(
+                "C",
+                updatedCreditsData.number - 1,
+                updatedCreditsData.__v
+              );
+              setCreditsC(updatedCreditsData.number - 1);
+            });
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
     }
 
-    function executeAction(type: string) {
-      if (type === "A") {
+    function executeAction(nextActionInQueue: string) {
+      if (nextActionInQueue === "A") {
         actionA();
       }
-      if (type === "B") {
+      if (nextActionInQueue === "B") {
         actionB();
       }
-      if (type === "C") {
+      if (nextActionInQueue === "C") {
         actionC();
       }
     }
 
-    function checkCreditForAction(type: string) {
-      if (type === "A" && creditsA !== null) {
+    function checkCreditForAction(nextActionInQueue: string) {
+      if (nextActionInQueue === "A" && creditsA !== null) {
         if (typeof creditsA === "number" && creditsA > 0) {
           return true;
         } else {
@@ -199,7 +246,7 @@ function App() {
           return false;
         }
       }
-      if (type === "B") {
+      if (nextActionInQueue === "B" && creditsB !== null) {
         if (typeof creditsB === "number" && creditsB > 0) {
           return true;
         } else {
@@ -208,7 +255,7 @@ function App() {
           return false;
         }
       }
-      if (type === "C") {
+      if (nextActionInQueue === "C" && creditsC !== null) {
         if (typeof creditsC === "number" && creditsC > 0) {
           return true;
         } else {
@@ -222,14 +269,13 @@ function App() {
     function nextAction() {
       // Check if "action" waiting in queue
       if (queue.length > 0) {
-        // -- console.log
-        console.clear();
         // console.log(queue);
-        const type = queue[0]; // Get the next "action" (ex : "A")
-        const haveCredit = checkCreditForAction(type); // Check if we have crédits for this "action"
+        console.clear();
+        const nextActionInQueue = queue[0]; // Get the next "action" (ex : "A")
+        const haveCredit = checkCreditForAction(nextActionInQueue); // Check if we have crédits for this "action"
         // --- Execute l'action
         if (haveCredit) {
-          executeAction(type); // execute "action"
+          executeAction(nextActionInQueue); // execute "action"
           setQueue((previousQueue) => previousQueue.slice(1)); // retire l'action (éxécuté) du tableau
         } else {
           setQueue((previousQueue) => previousQueue.slice(1)); // retire l'action (non éxécuté) du tableau

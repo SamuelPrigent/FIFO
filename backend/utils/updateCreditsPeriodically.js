@@ -25,7 +25,7 @@ async function updateCreditsWithController() {
 }
 
 function updateCreditsWithControllerPeriodically() {
-  const intervalId = setInterval(updateCreditsWithController, 30 * 1000); // Intervalle de 30s
+  const intervalId = setInterval(updateCreditsWithController, 25 * 1000); // Intervalle de 25s
   return intervalId;
 }
 

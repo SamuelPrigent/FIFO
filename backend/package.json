@@ -1,6 +1,6 @@
 {
-  "name": "backend",
-  "main": "server.js",
+  "name": "backendtypescript",
+  "main": "server.ts",
   "type": "module",
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -11,16 +11,28 @@
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.14",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.2",
+    "@types/sinon": "^17.0.3",
+    "@types/supertest": "^6.0.2",
     "chai": "^5.1.0",
     "esm": "^3.2.25",
     "mocha": "^10.4.0",
     "nodemon": "^3.1.0",
-    "supertest": "^6.3.4"
+    "sinon": "^17.0.1",
+    "supertest": "^6.3.4",
+    "ts-mocha": "^10.0.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.3"
   },
   "scripts": {
-    "test": "mocha",
-    "start": "node server",
-    "dev": "nodemon server"
+    "clean": "npx tsc --build --clean",
+    "build": "npx tsc --build",
+    "start": "node dist/server.js",
+    "dev": "npx nodemon dist/server.js",
+    "test": "mocha src/test/credits.test.js"
   },
   "version": "1.0.0",
   "license": "ISC",

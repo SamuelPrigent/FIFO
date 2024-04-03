@@ -1,6 +1,10 @@
 import fetch from "node-fetch";
 import "dotenv/config";
-const port = process.env.PORT || 3000;
+const port: number = parseInt(process.env.PORT!) || 3000;
+
+interface ApiResponse {
+  message?: string;
+}
 
 // Update with controller via route => /api/credits/updateCredits
 async function updateCreditsWithController() {
@@ -15,7 +19,7 @@ async function updateCreditsWithController() {
         },
       }
     );
-    const data = await response.json();
+    const data: ApiResponse = await response.json(); // Conversion du type de données
     if (!response.ok) {
       throw new Error(data.message || "Failed to update credits");
     }
@@ -24,7 +28,7 @@ async function updateCreditsWithController() {
   }
 }
 
-function updateCreditsWithControllerPeriodically() {
+function updateCreditsWithControllerPeriodically(): NodeJS.Timeout {
   const intervalId = setInterval(updateCreditsWithController, 25 * 1000); // Intervalle de 25s
   return intervalId;
 }

@@ -1,10 +1,10 @@
 // import Credit from "../models/credits.js"; // credit schema
 import fetch from "node-fetch";
 import "dotenv/config";
-const port = process.env.PORT || 3000;
+const port: number = parseInt(process.env.PORT!) || 3000;
 
 // ==== Credit exist ? ====
-async function DoesCreditExist(name) {
+async function DoesCreditExist(name: string): Promise<Boolean> {
   try {
     // === credits (id) exist ?
     const response = await fetch(
@@ -24,7 +24,7 @@ async function DoesCreditExist(name) {
 }
 
 // ==== Create the Credit ====
-async function createCreditIfNotExist(name) {
+async function createCreditIfNotExist(name: string): Promise<void> {
   try {
     if ((await DoesCreditExist(name)) === false) {
       const body = JSON.stringify({
@@ -55,7 +55,7 @@ async function createCreditIfNotExist(name) {
 }
 
 //  ===== Create Crédits =====
-async function createAllCreditsIfNotExist() {
+async function createAllCreditsIfNotExist(): Promise<void> {
   try {
     await createCreditIfNotExist("A");
     await createCreditIfNotExist("B");

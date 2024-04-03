@@ -1,6 +1,6 @@
 import request from "supertest";
 import { expect } from "chai";
-import serverTest from "../serverTest.js";
+import serverTest from "../../dist/serverTest.js";
 
 // ----------- Note -----------
 // if backend already run => use : PORT=3001 npm run test

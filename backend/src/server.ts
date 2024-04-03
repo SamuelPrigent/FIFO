@@ -1,18 +1,20 @@
+// Database
 import mongoose from "mongoose";
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config();
 
-// Connexion to test server
-mongoose.connect(process.env.MongoURL_test);
-// .then(() => console.log("Connexion à MongoDB réussie !"))
-// .catch(() => console.log("Connexion à MongoDB échouée !"));
+// Connexion to database
+mongoose
+  .connect(process.env.MongoURL as string)
+  .then(() => console.log("Connexion à MongoDB réussie !"))
+  .catch(() => console.log("Connexion à MongoDB échouée !"));
 
 // Server
 import http from "http";
 import app from "./app.js";
 
-const normalizePort = (val) => {
-  const port = parseInt(val, 10);
-
+const normalizePort = (val: string | number): number | string | boolean => {
+  const port: number = typeof val === "string" ? parseInt(val, 10) : val;
   if (isNaN(port)) {
     return val;
   }
@@ -22,11 +24,14 @@ const normalizePort = (val) => {
   return false;
 };
 
-const port = normalizePort("3001"); // port de test
+const port: number | string | boolean = normalizePort(
+  process.env.PORT || "3000"
+);
 app.set("port", port);
+const server: http.Server = http.createServer(app);
 
 // errorHandler recherche les erreurs et les gère
-const errorHandler = (error) => {
+const errorHandler = (error: NodeJS.ErrnoException): void => {
   if (error.syscall !== "listen") {
     throw error;
   }
@@ -47,16 +52,12 @@ const errorHandler = (error) => {
   }
 };
 
-const serverTest = http.createServer(app);
-
 // ecoute les évênement et nous indique dans la console sur quel port ils sont écouté
-serverTest.on("error", errorHandler);
-serverTest.on("listening", () => {
-  const address = serverTest.address();
+server.on("error", errorHandler);
+server.on("listening", () => {
+  const address = server.address();
   const bind = typeof address === "string" ? "pipe " + address : "port " + port;
   console.log("Listening on " + bind);
 });
 
-serverTest.listen(port);
-
-export default serverTest; // export for test
+server.listen(port);

@@ -1,5 +1,5 @@
 {
-  "name": "backendtypescript",
+  "name": "fifo-backend",
   "main": "server.ts",
   "type": "module",
   "dependencies": {

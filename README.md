@@ -1,5 +1,9 @@
 # React + NodeJS
 
+## Project description
+
+- Explore a FIFO (First In, First Out) queue system implemented in this project, where you can put to queue differents type of actions for execution.
+
 ## Configuration of Local Database
 
 - This guide explains how to configure your machine to use a local database with MongoDB Compass : [MongoDB Documentation](https://www.mongodb.com/docs/manual/administration/configuration/#std-label-base-config)

@@ -33,7 +33,7 @@
     "test": "mocha src/test/credits.test.js",
     "clean": "npx tsc --build --clean",
     "build": "npx tsc --build",
-    "watch": "npx tsx --watch"
+    "watch": "npx tsc --watch"
   },
   "version": "1.0.0",
   "license": "ISC",

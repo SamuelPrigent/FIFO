@@ -23,7 +23,7 @@ const normalizePort = (val: string | number): number | string | boolean => {
   return false;
 };
 
-const port: number | string | boolean = normalizePort("3004");
+const port: number | string | boolean = normalizePort("3001");
 app.set("port", port);
 const serverTest: http.Server = http.createServer(app);
 

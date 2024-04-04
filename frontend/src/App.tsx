@@ -69,7 +69,7 @@ function App() {
         .then((data) => {
           if (data && "number" in data) {
             eval(`setCredits${name}(${number})`);
-            console.log(`Credits ${name} (updated) =>`, data.number);
+            // console.log(`Credits ${name} (updated) =>`, data.number);
           }
           resolve();
         })
@@ -245,7 +245,7 @@ function App() {
       // Check if "action" waiting in queue
       if (queue.length > 0) {
         // console.log(queue);
-        console.clear();
+        // console.clear();
         const nextActionInQueue = queue[0]; // Get the next "action" (ex : "A")
         // --- Execute l'action
         executeAction(nextActionInQueue); // execute "action"
@@ -277,17 +277,17 @@ function App() {
       }
       // Retire les éléments du tableau qui n'ont plus de crédits
       if (queue[0] === "A" && creditsA === 0 && queue.includes("A")) {
-        console.log("Remove A from queue");
+        // console.log("Remove A from queue");
         const newQueue = queue.filter((item) => item !== "A");
         setQueue(newQueue);
       }
       if (queue[0] === "B" && creditsB === 0 && queue.includes("B")) {
-        console.log("Remove B from queue");
+        // console.log("Remove B from queue");
         const newQueue = queue.filter((item) => item !== "B");
         setQueue(newQueue);
       }
       if (queue[0] === "C" && creditsC === 0 && queue.includes("C")) {
-        console.log("Remove C from queue");
+        // console.log("Remove C from queue");
         const newQueue = queue.filter((item) => item !== "C");
         setQueue(newQueue);
       }

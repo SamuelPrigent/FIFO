@@ -1,239 +1,195 @@
 import request from "supertest";
-import { expect } from "chai";
-import serverTest from "../../dist/serverTest.js";
+import { test, assert } from "vitest";
+import server from "../../dist/server.js";
 
-// ----------- Note -----------
-// if backend already run => use : PORT=3001 npm run test
-// else => use : npm run test
-// -------------------------------
-
-describe("POST {object} to create a credit", () => {
-  // -- Crédit A
-  it("Credits A created", (done) => {
-    const newCreditA = {
-      name: "a",
-      number: 5,
-      maxNumber: 5,
-    };
-    // console.log(newCredit);
-    request(serverTest)
-      .post("/api/credits")
-      .send(newCreditA)
-      .set("Accept", "application/json")
-      .expect(201)
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.body).to.have.property("name").to.equal("A");
-        expect(res.body).to.have.property("number").to.equal(5);
-        expect(res.body).to.have.property("maxNumber").to.equal(5);
-        done();
-      });
-  });
-  // -- Crédit B
-  it("Credits B created", (done) => {
-    const newCreditB = {
-      name: "b",
-      number: 5,
-      maxNumber: 5,
-    };
-    request(serverTest)
-      .post("/api/credits")
-      .send(newCreditB)
-      .set("Accept", "application/json")
-      .expect(201)
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.body).to.have.property("name").to.equal("B");
-        expect(res.body).to.have.property("number").to.equal(5);
-        expect(res.body).to.have.property("maxNumber").to.equal(5);
-        done();
-      });
-  });
-  // -- Crédit C
-  it("Credits C created", (done) => {
-    const newCreditC = {
-      name: "c",
-      number: 5,
-      maxNumber: 5,
-    };
-    request(serverTest)
-      .post("/api/credits")
-      .send(newCreditC)
-      .set("Accept", "application/json")
-      .expect(201)
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.body).to.have.property("name").to.equal("C");
-        expect(res.body).to.have.property("number").to.equal(5);
-        expect(res.body).to.have.property("maxNumber").to.equal(5);
-        done();
-      });
-  });
+// Response for credits A
+test("GET A : response format", async () => {
+  //
+  // const resA = await request(serverTest)
+  const resA = await request(server)
+    .get("/api/credits/A")
+    .set("Accept", "application/json");
+  //
+  assert.equal(resA.status, 200);
+  assert.property(resA.body, "_id");
+  assert.propertyVal(resA.body, "name", "A");
+  assert.property(resA.body, "number");
+  assert.property(resA.body, "maxNumber");
+  assert.property(resA.body, "__v");
 });
 
-// -------------------------------
-
-describe("GET/:id check response format and informations", () => {
-  // --- Credits A
-  it("Response for credits A is correct", (done) => {
-    request(serverTest)
-      .get("/api/credits/A")
-      .set("Accept", "application/json")
-      .end((err, res) => {
-        if (err) return done(err);
-        // Check if Status 200
-        expect(res.status).to.equal(200);
-        // Vérifie propriétés de response
-        expect(res.body).to.have.property("_id");
-        expect(res.body).to.have.property("name").to.equals("A");
-        expect(res.body).to.have.property("number");
-        expect(res.body).to.have.property("maxNumber");
-        expect(res.body).to.have.property("__v");
-        done(); // Fin du test
-      });
-  });
-  // --- Credits B
-  it("Response for credits B is correct", (done) => {
-    request(serverTest)
-      .get("/api/credits/B")
-      .set("Accept", "application/json")
-      .end((err, res) => {
-        if (err) return done(err);
-        // Check if Status 200
-        expect(res.status).to.equal(200);
-        // Vérifie propriétés de response
-        expect(res.body).to.have.property("_id");
-        expect(res.body).to.have.property("name").to.equals("B");
-        expect(res.body).to.have.property("number");
-        expect(res.body).to.have.property("maxNumber");
-        expect(res.body).to.have.property("__v");
-        done(); // Fin du test
-      });
-  });
-  // --- Credits C
-  it("Response for credits C is correct", (done) => {
-    request(serverTest)
-      .get("/api/credits/C")
-      .set("Accept", "application/json")
-      .end((err, res) => {
-        if (err) return done(err);
-        // Check if Status 200
-        expect(res.status).to.equal(200);
-        // Vérifie propriétés de response
-        expect(res.body).to.have.property("_id");
-        expect(res.body).to.have.property("name").to.equals("C");
-        expect(res.body).to.have.property("number");
-        expect(res.body).to.have.property("maxNumber");
-        expect(res.body).to.have.property("__v");
-        done(); // Fin du test
-      });
-  });
+// Response for credits B
+test("GET B : response format", async () => {
+  //
+  // const resB = await request(serverTest)
+  const resB = await request(server)
+    .get("/api/credits/B")
+    .set("Accept", "application/json");
+  //
+  assert.equal(resB.status, 200);
+  assert.property(resB.body, "_id");
+  assert.propertyVal(resB.body, "name", "B");
+  assert.property(resB.body, "number");
+  assert.property(resB.body, "maxNumber");
+  assert.property(resB.body, "__v");
 });
 
-// -------------------------------
-
-describe("PUT/:id credits", () => {
-  it("Credits A updated", (done) => {
-    const requestBody = {
-      number: 10,
-      __v: -1,
-    };
-    request(serverTest)
-      .put("/api/credits/A")
-      .send(requestBody) // Envoyer le corps de la requête
-      .set("Accept", "application/json")
-      .end((err, res) => {
-        if (err) return done(err);
-        // Vérifier le statut de la réponse
-        expect(res.status).to.equal(200);
-        // Vérifier que le champ "number" a été correctement modifié
-        expect(res.body).to.have.property("number").to.equal(10);
-        done(); // Fin du test
-      });
-  });
-  it("Credits B updated", (done) => {
-    const requestBody = {
-      number: 10,
-      __v: -1,
-    };
-    request(serverTest)
-      .put("/api/credits/B")
-      .send(requestBody) // Envoyer le corps de la requête
-      .set("Accept", "application/json")
-      .end((err, res) => {
-        if (err) return done(err);
-        // Vérifier le statut de la réponse
-        expect(res.status).to.equal(200);
-        // Vérifier que le champ "number" a été correctement modifié
-        expect(res.body).to.have.property("number").to.equal(10);
-        done(); // Fin du test
-      });
-  });
-  it("Credits C updated", (done) => {
-    const requestBody = {
-      number: 10,
-      __v: -1,
-    };
-    request(serverTest)
-      .put("/api/credits/C")
-      .send(requestBody) // Envoyer le corps de la requête
-      .set("Accept", "application/json")
-      .end((err, res) => {
-        if (err) return done(err);
-        // Vérifier le statut de la réponse
-        expect(res.status).to.equal(200);
-        // Vérifier que le champ "number" a été correctement modifié
-        expect(res.body).to.have.property("number").to.equal(10);
-        done(); // Fin du test
-      });
-  });
+// Response for credits C
+test("GET C : response format", async () => {
+  // const resC = await request(serverTest)
+  const resC = await request(server)
+    .get("/api/credits/C")
+    .set("Accept", "application/json");
+  assert.equal(resC.status, 200);
+  assert.property(resC.body, "_id");
+  assert.propertyVal(resC.body, "name", "C");
+  assert.property(resC.body, "number");
+  assert.property(resC.body, "maxNumber");
+  assert.property(resC.body, "__v");
 });
 
-// -------------------------------
+// PUT A
+test("PUT A", async () => {
+  // body
+  const requestBody = {
+    number: 10,
+    __v: -1,
+  };
+  //
+  // const resA = await request(serverTest)
+  const resA = await request(server)
+    .put("/api/credits/A")
+    .send(requestBody)
+    .set("Accept", "application/json");
+  //
+  assert.equal(resA.status, 200);
+  assert.propertyVal(resA.body, "number", 10);
+});
 
-describe("DELETE/:id credit", () => {
-  // -- Suppression Crédit A
-  it("Credit A deleted", (done) => {
-    request(serverTest)
-      .delete("/api/credits/A")
-      .set("Accept", "application/json")
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.body)
-          .to.have.property("message")
-          .to.equal("Crédit supprimé avec succès");
-        done();
-      });
-  });
+// PUT B
+test("PUT B", async () => {
+  const requestBody = {
+    number: 10,
+    __v: -1,
+  };
+  // const resB = await request(serverTest)
+  const resB = await request(server)
+    .put("/api/credits/B")
+    .send(requestBody)
+    .set("Accept", "application/json");
+  //
+  assert.equal(resB.status, 200);
+  assert.propertyVal(resB.body, "number", 10);
+});
 
-  // -- Suppression Crédit B
-  it("Credit B deleted", (done) => {
-    request(serverTest)
-      .delete("/api/credits/B")
-      .set("Accept", "application/json")
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.body)
-          .to.have.property("message")
-          .to.equal("Crédit supprimé avec succès");
-        done();
-      });
-  });
+// PUT C
+test("PUT C", async () => {
+  const requestBody = {
+    number: 10,
+    __v: -1,
+  };
+  // const resC = await request(serverTest)
+  const resC = await request(server)
+    .put("/api/credits/C")
+    .send(requestBody)
+    .set("Accept", "application/json");
+  //
+  assert.equal(resC.status, 200);
+  assert.propertyVal(resC.body, "number", 10);
+});
 
-  // -- Suppression Crédit C
-  it("Credit C deleted", (done) => {
-    request(serverTest)
-      .delete("/api/credits/C")
-      .set("Accept", "application/json")
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.body)
-          .to.have.property("message")
-          .to.equal("Crédit supprimé avec succès");
-        done();
-      });
-  });
+// DELETE A
+test("Delete A", async () => {
+  // request
+  // const resDeleteA = await request(serverTest)
+  const resDeleteA = await request(server)
+    .delete("/api/credits/A")
+    .set("Accept", "application/json");
+  // response
+  assert.equal(resDeleteA.status, 200);
+});
+
+// DELETE B
+test("Delete B", async () => {
+  // request
+  // const resDeleteB = await request(serverTest)
+  const resDeleteB = await request(server)
+    .delete("/api/credits/B")
+    .set("Accept", "application/json");
+  // response
+  assert.equal(resDeleteB.status, 200);
+});
+
+// DELETE C
+test("Delete C", async () => {
+  // request
+  // const resDeleteC = await request(serverTest)
+  const resDeleteC = await request(server)
+    .delete("/api/credits/C")
+    .set("Accept", "application/json");
+  // response
+  assert.equal(resDeleteC.status, 200);
+});
+
+// POST A
+test("Create A", async () => {
+  // object
+  const newCreditA = {
+    name: "a",
+    number: 5,
+    maxNumber: 5,
+  };
+  // request
+  // const resA = await request(serverTest)
+  const resA = await request(server)
+    .post("/api/credits")
+    .send(newCreditA)
+    .set("Accept", "application/json");
+  // response
+  assert.equal(resA.status, 201);
+  assert.equal(resA.body.name, "A");
+  assert.equal(resA.body.number, 5);
+  assert.equal(resA.body.maxNumber, 5);
+});
+
+// POST B
+test("Create B", async () => {
+  // object
+  const newCreditB = {
+    name: "b",
+    number: 5,
+    maxNumber: 5,
+  };
+  // request
+  // const resB = await request(serverTest)
+  const resB = await request(server)
+    .post("/api/credits")
+    .send(newCreditB)
+    .set("Accept", "application/json");
+  // response
+  assert.equal(resB.status, 201);
+  assert.equal(resB.body.name, "B");
+  assert.equal(resB.body.number, 5);
+  assert.equal(resB.body.maxNumber, 5);
+});
+
+// POST C
+test("Create C", async () => {
+  // object
+  const newCreditC = {
+    name: "c",
+    number: 5,
+    maxNumber: 5,
+  };
+  // request
+  // const resC = await request(serverTest)
+  const resC = await request(server)
+    .post("/api/credits")
+    .send(newCreditC)
+    .set("Accept", "application/json");
+  // response
+  assert.equal(resC.status, 201);
+  assert.equal(resC.body.name, "C");
+  assert.equal(resC.body.number, 5);
+  assert.equal(resC.body.maxNumber, 5);
 });

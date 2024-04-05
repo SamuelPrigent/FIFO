@@ -10,7 +10,8 @@ import credit from "./assets/credit.svg";
 import reset2 from "./assets/reset2.svg";
 import reset from "./assets/reset.svg"; // dev mode
 import cross from "./assets/cross.svg"; // dev mode
-//
+// socket
+import io from "socket.io-client";
 
 function App() {
   const [queue, setQueue] = useState<string[]>([]);
@@ -125,7 +126,7 @@ function App() {
     map: PropTypes.string,
   };
 
-  // ====== Fetch data for local state (on reload + every 10sec) ======
+  // ====== Fetch data for local state (on reload + every 25sec) ======
   useEffect(() => {
     async function fetchDataForLocalState() {
       const creditsAData = await fetchCreditsData("A"); // fetch credits A data
@@ -136,11 +137,26 @@ function App() {
       setCreditsC(creditsCData.number); // update local state
     }
     fetchDataForLocalState(); // on reload
-    //
-    // ======= (Interval on Fetch every 25s) =======
-    const intervalId = setInterval(fetchDataForLocalState, 25 * 1000);
+
+    // ======== Get data via Socket (for the moment try to get event) ========
+    const socket = io(`http://localhost:${PORT}`); // socket.io écoute l'url du back
+    // Ecoute "creditsUpdated" depuis le back
+    socket.on("creditsUpdated", (data) => {
+      // console.log(data.message);
+      if (data.creditsA) {
+        setCreditsA(`${data.creditsA}`);
+      }
+      if (data.creditsB) {
+        setCreditsB(`${data.creditsB}`);
+      }
+      if (data.creditsC) {
+        setCreditsC(`${data.creditsC}`);
+      }
+    });
+
+    // ======== Demontage composant  ========
     return () => {
-      clearInterval(intervalId);
+      socket.disconnect(); // Déconnexion du serveur de sockets
     };
   }, []);
   //

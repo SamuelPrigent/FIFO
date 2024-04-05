@@ -1,8 +1,10 @@
-import { Request, Response, NextFunction } from "express";
 import { Credit, ICredit } from "../models/credits.js"; // credit schema
+import { Request, Response, NextFunction } from "express";
 import fetch, { Response as FetchResponse } from "node-fetch"; // Importez Response de node-fetch
 import "dotenv/config";
 const port: number = parseInt(process.env.PORT!) || 3000;
+// socket
+import { io } from "../server.js";
 
 // ==== Create 1 credit ====
 export const createCredit = async (
@@ -127,6 +129,7 @@ function generateRandomPercentage(maxNumber: number): number {
 
 // -- Edit all crédits
 export const editAllCredits = async (
+  // io:
   req: Request,
   res: Response,
   next: NextFunction
@@ -196,6 +199,14 @@ export const editAllCredits = async (
     ]);
     // Response
     console.log(`All credits updated (controller)`);
+    // Socket event
+    io.emit("creditsUpdated", {
+      message: "Les crédits ont été mis à jour",
+      creditsA: randomCreditsA,
+      creditsB: randomCreditsB,
+      creditsC: randomCreditsC,
+    });
+    //
     return res
       .status(200)
       .json({ message: "All credits updated successfully" });

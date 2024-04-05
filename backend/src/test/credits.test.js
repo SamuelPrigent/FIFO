@@ -1,10 +1,46 @@
 import request from "supertest";
-import { test, assert } from "vitest";
+import { test, assert, beforeAll, afterAll } from "vitest";
 import server from "../../dist/server.js";
+
+// ===========================
+
+beforeAll(async () => {
+  // Vérifier si les crédits A, B et C existent
+  const resA = await request(server)
+    .get("/api/credits/A")
+    .set("Accept", "application/json");
+  const resB = await request(server)
+    .get("/api/credits/B")
+    .set("Accept", "application/json");
+  const resC = await request(server)
+    .get("/api/credits/C")
+    .set("Accept", "application/json");
+
+  // Si l'un des crédits n'existe pas, les créer
+  if (resA.status === 404) {
+    await request(server)
+      .post("/api/credits")
+      .send({ name: "A", number: 5, maxNumber: 5 })
+      .set("Accept", "application/json");
+  }
+  if (resB.status === 404) {
+    await request(server)
+      .post("/api/credits")
+      .send({ name: "B", number: 5, maxNumber: 5 })
+      .set("Accept", "application/json");
+  }
+  if (resC.status === 404) {
+    await request(server)
+      .post("/api/credits")
+      .send({ name: "C", number: 5, maxNumber: 5 })
+      .set("Accept", "application/json");
+  }
+});
+
+// ===========================
 
 // Response for credits A
 test("GET A : response format", async () => {
-  //
   // const resA = await request(serverTest)
   const resA = await request(server)
     .get("/api/credits/A")

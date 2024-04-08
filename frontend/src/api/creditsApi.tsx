@@ -40,17 +40,8 @@ export function putCreditsData(
         if (!response.ok) {
           reject(new Error("Network response was not ok"));
         }
-        return response.json();
-      })
-      .then((data) => {
-        if (data && "number" in data) {
-          // ========== je modifie jamais le state ici du coup ============
-          // eval(`setCredits${name}(${number})`);
-          // updateState(number);
-          // console.log(`Credits ${name} (updated) =>`, data.number);
-          // ===============================================
-        }
         resolve();
+        return response.json();
       })
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);

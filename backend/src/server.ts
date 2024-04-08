@@ -34,7 +34,9 @@ const server: http.Server = http.createServer(app);
 
 // ---------------- Socket.io : attache io au server et permet la connection du front 5173  ----------------
 const io = new SocketIOServer(server, {
-  cors: { origin: ["http://localhost:5173"] },
+  cors: {
+    origin: ["http://localhost:5173", "http://localhost:4173"],
+  },
 });
 
 // ---------------- Error Handler (server) ----------------

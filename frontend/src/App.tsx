@@ -1,6 +1,5 @@
 // react
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
 const PORT = import.meta.env.VITE_API_PORT || 3000; // env port
 // style
 import "./style/reset.css";
@@ -15,6 +14,9 @@ import io from "socket.io-client";
 import ActionButton from "./components/ActionButton";
 import Alert from "./components/Alert";
 import CreditSection from "./components/CreditSection";
+import QueueList from "./components/QueueList";
+// request api
+import { fetchCreditsData, putCreditsData } from "./api/creditsApi";
 
 function App() {
   const [queue, setQueue] = useState<string[]>([]);
@@ -25,66 +27,25 @@ function App() {
   const [alertB, setAlertB] = useState<boolean>(false);
   const [alertC, setAlertC] = useState<boolean>(false);
 
-  // ============ Request functions ============
+  // ============ Edit state by type ============
 
-  interface CreditData {
-    _id: string;
-    name: string;
-    number: number;
-    maxNumber: number;
-    __v: number;
+  function updateCreditsState(type: string, number: number) {
+    switch (type) {
+      case "A":
+        setCreditsA(number);
+        break;
+      case "B":
+        setCreditsB(number);
+        break;
+      case "C":
+        setCreditsC(number);
+        break;
+      default:
+        console.error("Type inconnu:", type);
+    }
   }
 
-  // fetch data return data
-  async function fetchCreditsData(name: string): Promise<CreditData> {
-    return fetch(`http://localhost:${PORT}/api/credits/${name}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json() as Promise<CreditData>;
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
-        throw error;
-      });
-  }
-
-  // function putCreditsData(name: string, number: number, version: number) {
-  function putCreditsData(
-    name: string,
-    number: number,
-    version: number
-  ): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      fetch(`http://localhost:${PORT}/api/credits/${name}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ number: number, __v: version }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            reject(new Error("Network response was not ok"));
-          }
-          return response.json();
-        })
-        .then((data) => {
-          if (data && "number" in data) {
-            eval(`setCredits${name}(${number})`);
-            // console.log(`Credits ${name} (updated) =>`, data.number);
-          }
-          resolve();
-        })
-        .catch((error) => {
-          console.error("There was a problem with the fetch operation:", error);
-          reject(error);
-        });
-    });
-  }
-
-  // ============================
+  // ====================================
 
   function resetQueue() {
     setQueue([]);
@@ -95,6 +56,9 @@ function App() {
     putCreditsData("A", 0, -1);
     putCreditsData("B", 0, -1);
     putCreditsData("C", 0, -1);
+    setCreditsA(0);
+    setCreditsB(0);
+    setCreditsC(0);
   }
 
   function resetCredits() {
@@ -102,32 +66,14 @@ function App() {
     putCreditsData("A", 5, -1);
     putCreditsData("B", 5, -1);
     putCreditsData("C", 5, -1);
+    setCreditsA(5);
+    setCreditsB(5);
+    setCreditsC(5);
   }
 
   function addInQueue(actionType: string) {
     setQueue((previousQueue) => [...previousQueue, actionType]);
   }
-
-  // Mise en forme de la queue en composant
-  function QueueListComponent({ queue }: { queue: string[] }) {
-    return (
-      <div className="queueListComponent">
-        {queue.map((item, index) => (
-          <React.Fragment key={index}>
-            <div className="taskContainer">
-              {index !== 0 && <span className="arrowQueue"> -&gt; </span>}
-              <span className={`task${item}`}>{item}</span>
-            </div>
-          </React.Fragment>
-        ))}
-      </div>
-    );
-  }
-
-  QueueListComponent.propTypes = {
-    queue: PropTypes.arrayOf(PropTypes.string),
-    map: PropTypes.string,
-  };
 
   // ====== Fetch data for local state (on reload + every 25sec) ======
   useEffect(() => {
@@ -174,15 +120,7 @@ function App() {
         if (databaseCredits > 0) {
           putCreditsData(`${type}`, databaseCredits - 1, creditsData.__v) // Update Database with data
             .then(() => {
-              if (type === "A") {
-                setCreditsA(databaseCredits - 1); // PUT réussis ==> update local state
-              }
-              if (type === "B") {
-                setCreditsB(databaseCredits - 1); // PUT réussis ==> update local state
-              }
-              if (type === "C") {
-                setCreditsC(databaseCredits - 1); // PUT réussis ==> update local state
-              }
+              updateCreditsState(type, databaseCredits - 1); // then update local State
             })
             .catch(async () => {
               console.log(`Credits ${type} (retry-update)`);
@@ -192,15 +130,7 @@ function App() {
                 updatedCreditsData.number - 1,
                 updatedCreditsData.__v
               );
-              if (type === "A") {
-                setCreditsA(databaseCredits - 1); // PUT réussis ==> update local state
-              }
-              if (type === "B") {
-                setCreditsB(databaseCredits - 1); // PUT réussis ==> update local state
-              }
-              if (type === "C") {
-                setCreditsC(databaseCredits - 1); // PUT réussis ==> update local state
-              }
+              updateCreditsState(type, updatedCreditsData.number - 1);
             });
         } else {
           if (type === "A") {
@@ -320,7 +250,7 @@ function App() {
           </div>
           <div className="queueList">
             {queue.length !== 0 ? (
-              <QueueListComponent queue={queue} />
+              <QueueList queue={queue} />
             ) : (
               "Aucune action en attente"
             )}

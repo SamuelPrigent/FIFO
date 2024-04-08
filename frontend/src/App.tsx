@@ -6,12 +6,15 @@ const PORT = import.meta.env.VITE_API_PORT || 3000; // env port
 import "./style/reset.css";
 import "./style/App.css";
 // assets
-import credit from "./assets/credit.svg";
 import reset2 from "./assets/reset2.svg";
 import reset from "./assets/reset.svg"; // dev mode
 import cross from "./assets/cross.svg"; // dev mode
 // socket
 import io from "socket.io-client";
+// components
+import ActionButton from "./components/ActionButton";
+import Alert from "./components/Alert";
+import CreditSection from "./components/CreditSection";
 
 function App() {
   const [queue, setQueue] = useState<string[]>([]);
@@ -138,7 +141,7 @@ function App() {
     }
     fetchDataForLocalState(); // on reload
 
-    // ======== Get data via Socket (for the moment try to get event) ========
+    // ======== Get data via Socket ========
     const socket = io(`http://localhost:${PORT}`); // socket.io écoute l'url du back
     // Ecoute "creditsUpdated" depuis le back
     socket.on("creditsUpdated", (data) => {
@@ -164,96 +167,54 @@ function App() {
   // ============ Interval 1sec // Execute les actions ============
   useEffect(() => {
     // Action (fetch data in Database before -1)
-    async function actionA() {
+    async function executeActionByType(type: string) {
       try {
-        const creditsData = await fetchCreditsData("A"); // get data : fetchCreditsData("A")
-        const databaseCreditsA = creditsData.number; // get : data.number // check via database
-        if (databaseCreditsA > 0) {
-          putCreditsData("A", databaseCreditsA - 1, creditsData.__v) // Update Database with data
+        const creditsData = await fetchCreditsData(`${type}`); // get data : fetchCreditsData("A")
+        const databaseCredits = creditsData.number; // get : data.number // check via database
+        if (databaseCredits > 0) {
+          putCreditsData(`${type}`, databaseCredits - 1, creditsData.__v) // Update Database with data
             .then(() => {
-              setCreditsA(databaseCreditsA - 1); // PUT réussis ==> update local state
+              if (type === "A") {
+                setCreditsA(databaseCredits - 1); // PUT réussis ==> update local state
+              }
+              if (type === "B") {
+                setCreditsB(databaseCredits - 1); // PUT réussis ==> update local state
+              }
+              if (type === "C") {
+                setCreditsC(databaseCredits - 1); // PUT réussis ==> update local state
+              }
             })
             .catch(async () => {
-              console.log("Credits A (retry-update)");
-              const updatedCreditsData = await fetchCreditsData("A");
+              console.log(`Credits ${type} (retry-update)`);
+              const updatedCreditsData = await fetchCreditsData(`${type}`);
               putCreditsData(
-                "A",
+                `${type}`,
                 updatedCreditsData.number - 1,
                 updatedCreditsData.__v
               );
-              setCreditsA(updatedCreditsData.number - 1);
+              if (type === "A") {
+                setCreditsA(databaseCredits - 1); // PUT réussis ==> update local state
+              }
+              if (type === "B") {
+                setCreditsB(databaseCredits - 1); // PUT réussis ==> update local state
+              }
+              if (type === "C") {
+                setCreditsC(databaseCredits - 1); // PUT réussis ==> update local state
+              }
             });
         } else {
-          setAlertA(true);
+          if (type === "A") {
+            setAlertA(true);
+          }
+          if (type === "B") {
+            setAlertB(true);
+          }
+          if (type === "C") {
+            setAlertC(true);
+          }
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
-      }
-    }
-
-    async function actionB() {
-      try {
-        const creditsData = await fetchCreditsData("B"); // get data : fetchCreditsData("B")
-        const databaseCreditsB = creditsData.number; // get : data.number // check via database
-        if (databaseCreditsB > 0) {
-          putCreditsData("B", databaseCreditsB - 1, creditsData.__v) // Update Database with data
-            .then(() => {
-              setCreditsB(databaseCreditsB - 1); // PUT réussis ==> update local state
-            })
-            .catch(async () => {
-              console.log("Credits B (retry-update)");
-              const updatedCreditsData = await fetchCreditsData("B");
-              putCreditsData(
-                "B",
-                updatedCreditsData.number - 1,
-                updatedCreditsData.__v
-              );
-              setCreditsB(updatedCreditsData.number - 1);
-            });
-        } else {
-          setAlertB(true);
-        }
-      } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
-      }
-    }
-
-    async function actionC() {
-      try {
-        const creditsData = await fetchCreditsData("C"); // get data : fetchCreditsData("C")
-        const databaseCreditsC = creditsData.number; // get : data.number // check via database
-        if (databaseCreditsC > 0) {
-          putCreditsData("C", databaseCreditsC - 1, creditsData.__v) // Update Database with data
-            .then(() => {
-              setCreditsC(databaseCreditsC - 1); // PUT réussis ==> update local state
-            })
-            .catch(async () => {
-              console.log("Credits C (retry-update)");
-              const updatedCreditsData = await fetchCreditsData("C");
-              putCreditsData(
-                "C",
-                updatedCreditsData.number - 1,
-                updatedCreditsData.__v
-              );
-              setCreditsC(updatedCreditsData.number - 1);
-            });
-        } else {
-          setAlertC(true);
-        }
-      } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
-      }
-    }
-
-    function executeAction(nextActionInQueue: string) {
-      if (nextActionInQueue === "A") {
-        actionA();
-      }
-      if (nextActionInQueue === "B") {
-        actionB();
-      }
-      if (nextActionInQueue === "C") {
-        actionC();
       }
     }
 
@@ -264,7 +225,7 @@ function App() {
         // console.clear();
         const nextActionInQueue = queue[0]; // Get the next "action" (ex : "A")
         // --- Execute l'action
-        executeAction(nextActionInQueue); // execute "action"
+        executeActionByType(nextActionInQueue);
         setQueue((previousQueue) => previousQueue.slice(1)); // retire l'action (éxécuté) du tableau
       } else {
         // Pas d'alerte si aucune action n'est en atente
@@ -320,21 +281,9 @@ function App() {
       <div className="navBar">
         <div className="appTitle">FIFO</div>
         <div className="creditsSection">
-          <div className="creditSection">
-            <div>A :</div>
-            <div>{creditsA}</div>
-            <img src={credit} className="creditSvg" />
-          </div>
-          <div className="creditSection">
-            <div>B :</div>
-            <div>{creditsB}</div>
-            <img src={credit} className="creditSvg" />
-          </div>
-          <div className="creditSection">
-            <div>C :</div>
-            <div>{creditsC}</div>
-            <img src={credit} className="creditSvg" />
-          </div>
+          <CreditSection type="A" stateValue={creditsA} />
+          <CreditSection type="B" stateValue={creditsB} />
+          <CreditSection type="C" stateValue={creditsC} />
         </div>
         {/* button for dev mode */}
         <div className="creditsButtonSection">
@@ -350,27 +299,9 @@ function App() {
         <div className="sectionContainer">
           <div className="titleElement">{"Liste d'actions"}</div>
           <div className="buttonContainer">
-            <button
-              className="buttonType"
-              id="typeA"
-              onClick={() => addInQueue("A")}
-            >
-              Type A
-            </button>
-            <button
-              className="buttonType"
-              id="typeB"
-              onClick={() => addInQueue("B")}
-            >
-              Type B
-            </button>
-            <button
-              className="buttonType"
-              id="typeC"
-              onClick={() => addInQueue("C")}
-            >
-              Type C
-            </button>
+            <ActionButton actionType="A" addActionToQueue={addInQueue} />
+            <ActionButton actionType="B" addActionToQueue={addInQueue} />
+            <ActionButton actionType="C" addActionToQueue={addInQueue} />
           </div>
         </div>
 
@@ -394,15 +325,9 @@ function App() {
               "Aucune action en attente"
             )}
           </div>
-          {alertA ? (
-            <div className="alertText">{"Crédit insuffisant: A"}</div>
-          ) : null}
-          {alertB ? (
-            <div className="alertText">{"Crédit insuffisant: B"}</div>
-          ) : null}
-          {alertC ? (
-            <div className="alertText">{"Crédit insuffisant: C"}</div>
-          ) : null}
+          {alertA ? <Alert message="Crédit insuffisant : A" /> : null}
+          {alertB ? <Alert message="Crédit insuffisant : B" /> : null}
+          {alertC ? <Alert message="Crédit insuffisant : C" /> : null}
         </div>
       </div>
     </>

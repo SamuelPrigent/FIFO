@@ -1,0 +1,20 @@
+@mixin redButton {
+  user-select: none;
+  background-color: lightpink;
+  color: darkred;
+  border-color: darkred;
+}
+
+@mixin greenButton {
+  user-select: none;
+  background-color: lightgreen;
+  color: darkgreen;
+  border-color: darkgreen;
+}
+
+@mixin blueButton {
+  user-select: none;
+  background-color: lightblue;
+  color: darkblue;
+  border-color: darkblue;
+}

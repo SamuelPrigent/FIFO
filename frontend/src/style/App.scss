@@ -1,3 +1,8 @@
+// import
+@import "mixins";
+// colors
+$darkblue: #001a72;
+
 #root {
   min-height: 100vh;
   width: 100%;
@@ -6,7 +11,6 @@
 }
 
 .mainContainer {
-  /* border: 2px solid red; */
   display: flex;
   flex-direction: column;
   height: auto;
@@ -27,7 +31,6 @@
   display: flex;
   gap: 15px;
   justify-content: center;
-  /* margin: 15px auto 15px; */
 }
 
 .buttonType {
@@ -48,19 +51,18 @@
   display: flex;
   align-items: center;
   width: 100%;
-  /* background-color: #87b5ff; */
   background-color: #f7eaf1;
   margin-top: 0px;
   padding: 20px;
   box-sizing: border-box;
   justify-content: space-between;
-  color: #001a72;
+  color: $darkblue;
 }
 
 .appTitle {
   font-size: 24px;
   font-weight: 600;
-  color: #001a72;
+  color: $darkblue;
 }
 
 /* credits */
@@ -116,26 +118,17 @@
 
 .buttonContainer :nth-child(1),
 .taskA {
-  user-select: none;
-  background-color: lightgreen;
-  color: darkgreen;
-  border-color: darkgreen;
+  @include greenButton;
 }
 
 .buttonContainer :nth-child(2),
 .taskB {
-  user-select: none;
-  background-color: lightblue;
-  color: darkblue;
-  border-color: darkblue;
+  @include blueButton;
 }
 
 .buttonContainer :nth-child(3),
 .taskC {
-  user-select: none;
-  background-color: lightpink;
-  color: darkred;
-  border-color: darkred;
+  @include redButton;
 }
 
 .buttonContainer :nth-child(1):hover,

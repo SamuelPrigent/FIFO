@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 // style
 import "./style/reset.css";
-import "./style/App.css";
+import "./style/App.scss";
 // assets
 import reset2 from "./assets/reset2.svg";
 import reset from "./assets/reset.svg"; // dev mode
@@ -26,8 +26,7 @@ function App() {
   const [alertB, setAlertB] = useState<boolean>(false);
   const [alertC, setAlertC] = useState<boolean>(false);
 
-  // === Edit state by type ===
-
+  // === Edit state ===
   function updateCreditsState(type: string, number: number) {
     switch (type) {
       case "A":
@@ -43,8 +42,6 @@ function App() {
         console.error("Type inconnu:", type);
     }
   }
-
-  // =============
 
   function resetQueue() {
     setQueue([]);
@@ -74,7 +71,7 @@ function App() {
     setQueue((previousQueue) => [...previousQueue, actionType]);
   }
 
-  // ========= useEffect Socket-io  =========
+  // ========= useEffect Socket-io (get creditsData from back instantly)  =========
   useSocketio(setCreditsA, setCreditsB, setCreditsC);
 
   // ====== Fetch data for local state (on reload) ======

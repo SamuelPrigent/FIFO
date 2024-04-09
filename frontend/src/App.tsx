@@ -1,6 +1,5 @@
 // react
 import { useState, useEffect } from "react";
-const PORT = import.meta.env.VITE_API_PORT || 3000; // env port
 // style
 import "./style/reset.css";
 import "./style/App.css";
@@ -8,8 +7,6 @@ import "./style/App.css";
 import reset2 from "./assets/reset2.svg";
 import reset from "./assets/reset.svg"; // dev mode
 import cross from "./assets/cross.svg"; // dev mode
-// socket
-import io from "socket.io-client";
 // components
 import ActionButton from "./components/ActionButton";
 import Alert from "./components/Alert";
@@ -17,6 +14,8 @@ import CreditSection from "./components/CreditSection";
 import QueueList from "./components/QueueList";
 // request api
 import { fetchCreditsData, putCreditsData } from "./api/creditsApi";
+// custom hook
+import { useSocketio } from "./hooks/useSocketio";
 
 function App() {
   const [queue, setQueue] = useState<string[]>([]);
@@ -27,7 +26,7 @@ function App() {
   const [alertB, setAlertB] = useState<boolean>(false);
   const [alertC, setAlertC] = useState<boolean>(false);
 
-  // ============ Edit state by type ============
+  // === Edit state by type ===
 
   function updateCreditsState(type: string, number: number) {
     switch (type) {
@@ -45,7 +44,7 @@ function App() {
     }
   }
 
-  // ====================================
+  // =============
 
   function resetQueue() {
     setQueue([]);
@@ -54,20 +53,20 @@ function App() {
   function deleteCredits() {
     console.clear();
     putCreditsData("A", 0, -1);
-    putCreditsData("B", 0, -1);
-    putCreditsData("C", 0, -1);
     setCreditsA(0);
+    putCreditsData("B", 0, -1);
     setCreditsB(0);
+    putCreditsData("C", 0, -1);
     setCreditsC(0);
   }
 
   function resetCredits() {
     console.clear();
     putCreditsData("A", 5, -1);
-    putCreditsData("B", 5, -1);
-    putCreditsData("C", 5, -1);
     setCreditsA(5);
+    putCreditsData("B", 5, -1);
     setCreditsB(5);
+    putCreditsData("C", 5, -1);
     setCreditsC(5);
   }
 
@@ -75,7 +74,10 @@ function App() {
     setQueue((previousQueue) => [...previousQueue, actionType]);
   }
 
-  // ====== Fetch data for local state (on reload + every 25sec) ======
+  // ========= useEffect Socket-io  =========
+  useSocketio(setCreditsA, setCreditsB, setCreditsC);
+
+  // ====== Fetch data for local state (on reload) ======
   useEffect(() => {
     async function fetchDataForLocalState() {
       const creditsAData = await fetchCreditsData("A"); // fetch credits A data
@@ -86,31 +88,10 @@ function App() {
       setCreditsC(creditsCData.number); // update local state
     }
     fetchDataForLocalState(); // on reload
-
-    // ======== Get data via Socket ========
-    const socket = io(`http://localhost:${PORT}`); // socket.io écoute l'url du back
-    // Ecoute "creditsUpdated" depuis le back
-    socket.on("creditsUpdated", (data) => {
-      // console.log(data.message);
-      if (data.creditsA) {
-        setCreditsA(`${data.creditsA}`);
-      }
-      if (data.creditsB) {
-        setCreditsB(`${data.creditsB}`);
-      }
-      if (data.creditsC) {
-        setCreditsC(`${data.creditsC}`);
-      }
-    });
-
-    // ======== Demontage composant  ========
-    return () => {
-      socket.disconnect(); // Déconnexion du serveur de sockets
-    };
   }, []);
   //
 
-  // ============ Interval 1sec // Execute les actions ============
+  // ======= Interval 1sec => Execute les actions =======
   useEffect(() => {
     // Action (fetch data in Database before -1)
     async function executeActionByType(type: string) {
@@ -151,11 +132,9 @@ function App() {
     function nextAction() {
       // Check if "action" waiting in queue
       if (queue.length > 0) {
-        // console.log(queue);
         // console.clear();
-        const nextActionInQueue = queue[0]; // Get the next "action" (ex : "A")
-        // --- Execute l'action
-        executeActionByType(nextActionInQueue);
+        const nextActionInQueue = queue[0]; // get next "action" (ex : "A")
+        executeActionByType(nextActionInQueue); // execute l'action
         setQueue((previousQueue) => previousQueue.slice(1)); // retire l'action (éxécuté) du tableau
       } else {
         // Pas d'alerte si aucune action n'est en atente

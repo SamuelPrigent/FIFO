@@ -40,8 +40,10 @@ export function putCreditsData(
         if (!response.ok) {
           reject(new Error("Network response was not ok"));
         }
-        resolve();
         return response.json();
+      })
+      .then((data) => {
+        resolve(data);
       })
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);

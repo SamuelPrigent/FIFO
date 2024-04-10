@@ -12,21 +12,31 @@ import ActionButton from "./components/ActionButton";
 import Alert from "./components/Alert";
 import CreditSection from "./components/CreditSection";
 import QueueList from "./components/QueueList";
-// request api
-import { fetchCreditsData, putCreditsData } from "./api/creditsApi";
-// custom hook
+// api requests
+import { fetchCreditsData, putCreditsData } from "./api/creditsRequests";
+// hooks
 import { useSocketio } from "./hooks/useSocketio";
+import { useFetchAndSetCredits } from "./hooks/useFetchAndSetCredits";
+// zustand state
+import useQueueStore from "./store/useQueueStore";
 
 function App() {
-  const [queue, setQueue] = useState<string[]>([]);
   const [creditsA, setCreditsA] = useState<number | string | null>(null);
   const [creditsB, setCreditsB] = useState<number | string | null>(null);
   const [creditsC, setCreditsC] = useState<number | string | null>(null);
   const [alertA, setAlertA] = useState<boolean>(false);
   const [alertB, setAlertB] = useState<boolean>(false);
   const [alertC, setAlertC] = useState<boolean>(false);
+  // Zustand - local storage gestion for global state
+  const {
+    queueStore,
+    setQueueLS,
+    addInQueueLS,
+    resetQueueLS,
+    removeActionFromQueueLS,
+  } = useQueueStore();
 
-  // === Edit state ===
+  // ====== Edit state ======
   function updateCreditsState(type: string, number: number) {
     switch (type) {
       case "A":
@@ -44,7 +54,7 @@ function App() {
   }
 
   function resetQueue() {
-    setQueue([]);
+    resetQueueLS(); // local storage
   }
 
   function deleteCredits() {
@@ -68,29 +78,17 @@ function App() {
   }
 
   function addInQueue(actionType: string) {
-    setQueue((previousQueue) => [...previousQueue, actionType]);
+    addInQueueLS(actionType); // local storage
   }
 
   // ========= useEffect Socket-io (get creditsData from back instantly)  =========
   useSocketio(setCreditsA, setCreditsB, setCreditsC);
 
-  // ====== Fetch data for local state (on reload) ======
-  useEffect(() => {
-    async function fetchDataForLocalState() {
-      const creditsAData = await fetchCreditsData("A"); // fetch credits A data
-      setCreditsA(creditsAData.number); // update local state
-      const creditsBData = await fetchCreditsData("B"); // fetch credits B data
-      setCreditsB(creditsBData.number); // update local state
-      const creditsCData = await fetchCreditsData("C"); // fetch credits B data
-      setCreditsC(creditsCData.number); // update local state
-    }
-    fetchDataForLocalState(); // on reload
-  }, []);
-  //
+  // ========= Fetch data for local state (on reload) =========
+  useFetchAndSetCredits(setCreditsA, setCreditsB, setCreditsC);
 
-  // ======= Interval 1sec => Execute les actions =======
+  // ========= Execute prochaine action de la queue => interval 1sec =========
   useEffect(() => {
-    // Action (fetch data in Database before -1)
     async function executeActionByType(type: string) {
       try {
         const creditsData = await fetchCreditsData(`${type}`); // get data : fetchCreditsData("A")
@@ -128,51 +126,51 @@ function App() {
 
     function nextAction() {
       // Check if "action" waiting in queue
-      if (queue.length > 0) {
+      if (queueStore.length > 0) {
         // console.clear();
-        const nextActionInQueue = queue[0]; // get next "action" (ex : "A")
+        const nextActionInQueue = queueStore[0]; // get next "action" (ex : "A")
         executeActionByType(nextActionInQueue); // execute l'action
-        setQueue((previousQueue) => previousQueue.slice(1)); // retire l'action (éxécuté) du tableau
+        removeActionFromQueueLS(0); // retire l'action du local storage
       } else {
         // Pas d'alerte si aucune action n'est en atente
         setAlertA(false);
         setAlertB(false);
         setAlertC(false);
       }
-      // Check credits for alert
+      // Pas d'alerte si pas de crédits X en attente ou si crédits de X > à 0
       if (
         (typeof creditsA === "number" && creditsA > 0) ||
-        !queue.includes("A")
+        !queueStore.includes("A")
       ) {
         setAlertA(false);
       }
       if (
         (typeof creditsB === "number" && creditsB > 0) ||
-        !queue.includes("B")
+        !queueStore.includes("B")
       ) {
         setAlertB(false);
       }
       if (
         (typeof creditsC === "number" && creditsC > 0) ||
-        !queue.includes("C")
+        !queueStore.includes("C")
       ) {
         setAlertC(false);
       }
       // Retire les éléments du tableau qui n'ont plus de crédits
-      if (queue[0] === "A" && creditsA === 0 && queue.includes("A")) {
+      if (queueStore[0] === "A" && creditsA === 0 && queueStore.includes("A")) {
         // console.log("Remove A from queue");
-        const newQueue = queue.filter((item) => item !== "A");
-        setQueue(newQueue);
+        const newQueue = queueStore.filter((item) => item !== "A");
+        setQueueLS(newQueue); // local storage
       }
-      if (queue[0] === "B" && creditsB === 0 && queue.includes("B")) {
+      if (queueStore[0] === "B" && creditsB === 0 && queueStore.includes("B")) {
         // console.log("Remove B from queue");
-        const newQueue = queue.filter((item) => item !== "B");
-        setQueue(newQueue);
+        const newQueue = queueStore.filter((item) => item !== "B");
+        setQueueLS(newQueue); // local storage
       }
-      if (queue[0] === "C" && creditsC === 0 && queue.includes("C")) {
+      if (queueStore[0] === "C" && creditsC === 0 && queueStore.includes("C")) {
         // console.log("Remove C from queue");
-        const newQueue = queue.filter((item) => item !== "C");
-        setQueue(newQueue);
+        const newQueue = queueStore.filter((item) => item !== "C");
+        setQueueLS(newQueue); // local storage
       }
     }
     // => Inverval (1s)
@@ -180,7 +178,7 @@ function App() {
     return () => {
       clearInterval(intervalIdNextAction);
     };
-  }, [queue, creditsA, creditsB, creditsC]);
+  }, [queueStore, creditsA, creditsB, creditsC]);
 
   return (
     <>
@@ -191,7 +189,7 @@ function App() {
           <CreditSection type="B" stateValue={creditsB} />
           <CreditSection type="C" stateValue={creditsC} />
         </div>
-        {/* button for dev mode */}
+        {/* buttons for dev mode */}
         <div className="creditsButtonSection">
           <div className="resetCredit" onClick={() => deleteCredits()}>
             <img src={cross} className="crossSvg" />
@@ -210,23 +208,20 @@ function App() {
             <ActionButton actionType="C" addActionToQueue={addInQueue} />
           </div>
         </div>
-
         <div className="sectionContainer">
           <div className="queueTitleSection">
             <div className="titleElement">{"Actions suivantes"}</div>
-            {queue.length !== 0 ? (
+            {queueStore.length !== 0 ? (
               <img
                 onClick={() => resetQueue()}
                 src={reset2}
                 className="resetSvg2"
               />
-            ) : (
-              ""
-            )}
+            ) : null}
           </div>
           <div className="queueList">
-            {queue.length !== 0 ? (
-              <QueueList queue={queue} />
+            {queueStore.length !== 0 ? (
+              <QueueList queue={queueStore} />
             ) : (
               "Aucune action en attente"
             )}

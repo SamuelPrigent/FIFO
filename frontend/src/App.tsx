@@ -26,19 +26,27 @@ function App() {
   // allType
   const allType: Array<keyof TypeOfCredits> = ["A", "B", "C"];
 
-  // ======= state variables =======
-  // credits
-  const [credits, setCredits] = useState<TypeOfCredits>({
-    A: null,
-    B: null,
-    C: null,
-  });
-  // alert
-  const [alerts, setAlerts] = useState<TypeOfAlerts>({
-    A: false,
-    B: false,
-    C: false,
-  });
+  // Objet généré via allType permettant de créer le state => credits
+  const initialCreditsState = allType.reduce(
+    (acc: TypeOfCredits, type: keyof TypeOfCredits) => {
+      acc[type] = null;
+      return acc;
+    },
+    {} as TypeOfCredits
+  );
+
+  // Objet généré via allType permettant de créer le state => alerts
+  const initialAlertsState = allType.reduce(
+    (acc: TypeOfAlerts, type: keyof TypeOfAlerts) => {
+      acc[type] = false;
+      return acc;
+    },
+    {} as TypeOfAlerts
+  );
+
+  // State généré via array allType et ses éléments : ["A", "B", "C", ...]
+  const [credits, setCredits] = useState<TypeOfCredits>(initialCreditsState);
+  const [alerts, setAlerts] = useState<TypeOfAlerts>(initialAlertsState);
 
   // Zustand for local storage management
   const {

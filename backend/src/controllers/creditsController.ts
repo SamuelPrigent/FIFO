@@ -6,6 +6,9 @@ const port: number = parseInt(process.env.PORT!) || 3000;
 // socket
 import { io } from "../server.js";
 
+// type d'action utilise dans editAllCredits
+const allType: string[] = ["A", "B", "C"];
+
 // ==== Create 1 credit ====
 export const createCredit = async (
   req: Request,

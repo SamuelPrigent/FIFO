@@ -55,7 +55,7 @@ button:focus-visible {
   height: auto;
   width: 100%;
   justify-content: center;
-  margin-top: 40px;
+  margin-top: 15px;
   gap: 20px;
 }
 
@@ -66,7 +66,8 @@ button:focus-visible {
   gap: 15px;
 }
 
-.buttonContainer {
+.buttonContainer,
+.creditsContainer {
   display: flex;
   gap: 15px;
   justify-content: center;
@@ -92,7 +93,7 @@ button:focus-visible {
   width: 100%;
   background-color: #f7eaf1;
   margin-top: 0px;
-  padding: 20px;
+  padding: 14px 20px;
   box-sizing: border-box;
   justify-content: space-between;
   color: $darkblue;
@@ -157,18 +158,35 @@ button:focus-visible {
 }
 
 .buttonContainer :nth-child(1),
-.taskA {
+.taskA,
+.creditsA {
   @include greenButton;
 }
 
 .buttonContainer :nth-child(2),
-.taskB {
+.taskB,
+.creditsB {
   @include blueButton;
 }
 
 .buttonContainer :nth-child(3),
-.taskC {
+.taskC,
+.creditsC {
   @include redButton;
+}
+
+// non scalable ??? - utiliser style component ?
+.buttonContainer :nth-child(n + 4),
+.taskD,
+.taskE,
+.taskF {
+  @include purpleButton;
+}
+//
+.creditsD,
+.creditsE,
+.creditsF {
+  @include purpleButton;
 }
 
 .buttonContainer *:hover {
@@ -196,9 +214,19 @@ button:focus-visible {
   gap: 4px;
 }
 
-.taskA,
-.taskB,
-.taskC {
+.creditsButton {
+  // border: 2px solid;
+  border-radius: 8px;
+  height: 34px;
+  padding: 0px 18px;
+  font-size: 17px;
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task {
   border: 2px solid;
   border-radius: 8px;
   height: 30px;

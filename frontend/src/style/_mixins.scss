@@ -8,7 +8,7 @@
 @mixin greenButton {
   user-select: none;
   background-color: lightgreen;
-  color: darkgreen;
+  color: #004e00;
   border-color: darkgreen;
 }
 
@@ -17,4 +17,11 @@
   background-color: lightblue;
   color: darkblue;
   border-color: darkblue;
+}
+
+@mixin purpleButton {
+  user-select: none;
+  background-color: #efdffc;
+  color: darkslateblue;
+  border-color: darkslateblue;
 }

@@ -8,48 +8,32 @@ import reset2 from "./assets/reset2.svg";
 import reset from "./assets/reset.svg"; // dev mode
 import cross from "./assets/cross.svg"; // dev mode
 // components
+import CreditsList from "./components/CreditsList";
 import ActionButton from "./components/ActionButton";
-import Alert from "./components/Alert";
-import CreditSection from "./components/CreditSection";
 import QueueList from "./components/QueueList";
+import Alert from "./components/Alert";
 // api requests
 import { fetchCreditsData, putCreditsData } from "./api/creditsRequests";
 // hooks
 import { useSocketio } from "./hooks/useSocketio";
-// import { useFetchAndSetCredits } from "./hooks/useFetchAndSetCredits";
 import { useFetchAndSetCredits } from "./hooks/useFetchAndSetCredits";
 // zustand state
 import useQueueStore from "./store/useQueueStore";
+// types
+import { TypeOfCredits, TypeOfAlerts } from "./types/types.ts";
 
 function App() {
-  // ======= credits =======
+  // allType
+  const allType: Array<keyof TypeOfCredits> = ["A", "B", "C"];
 
-  // type plus scalable ????
-  // on verra après pour modifier ce type // => type utilisé dans putCreditData
-  // interface TypeOfCredits {
-  //   [key: string]: number | string | null;
-  // }
-
-  // credits type
-  interface TypeOfCredits {
-    A: number | string | null;
-    B: number | string | null;
-    C: number | string | null;
-  }
-  //  alert type
-  interface TypeOfAlerts {
-    A: boolean;
-    B: boolean;
-    C: boolean;
-  }
-
-  // credits state
+  // ======= state variables =======
+  // credits
   const [credits, setCredits] = useState<TypeOfCredits>({
     A: null,
     B: null,
     C: null,
   });
-  // alert state
+  // alert
   const [alerts, setAlerts] = useState<TypeOfAlerts>({
     A: false,
     B: false,
@@ -64,9 +48,6 @@ function App() {
     resetQueueLS,
     removeActionFromQueueLS,
   } = useQueueStore();
-
-  // array: allType used for scalability
-  const allType: Array<keyof TypeOfCredits> = ["A", "B", "C"];
 
   // ====== Edit and Get local state of credits by (type) ======
 
@@ -98,16 +79,16 @@ function App() {
   function deleteCredits() {
     console.clear();
     allType.forEach((type) => {
-      putCreditsData(type, 0, -1);
-      updateCreditsState(type, 0);
+      putCreditsData(type as string, 0, -1);
+      updateCreditsState(type as string, 0);
     });
   }
 
   function resetCredits() {
     console.clear();
     allType.forEach((type) => {
-      putCreditsData(type, 5, -1);
-      updateCreditsState(type, 5);
+      putCreditsData(type as string, 5, -1);
+      updateCreditsState(type as string, 5);
     });
   }
 
@@ -116,11 +97,11 @@ function App() {
   }
 
   // ========= useEffect Socket-io (get creditsData from back instantly)  =========
-  useSocketio(updateCreditsState, allType);
+  useSocketio(updateCreditsState, allType as string[]);
 
   // ========= Fetch data for local state for all type of credits (on reload) =========
   allType.forEach((type) => {
-    useFetchAndSetCredits(updateCreditsState, type);
+    useFetchAndSetCredits(updateCreditsState, type as string);
   });
 
   // ========= Execute prochaine action de la queue => interval 1sec =========
@@ -163,7 +144,7 @@ function App() {
       } else {
         // -- Pas d'alerte si aucune action n'est en atente
         allType.forEach((type) => {
-          updateAlertState(type, false);
+          updateAlertState(type as string, false);
         });
       }
       // check for all type of crédits
@@ -174,7 +155,7 @@ function App() {
           (typeof creditsX === "number" && creditsX > 0) ||
           !queueStore.includes(`${type}`)
         ) {
-          updateAlertState(type, false);
+          updateAlertState(type as string, false);
         }
         // Retire les éléments du tableau qui n'ont plus de crédits
         if (
@@ -198,11 +179,6 @@ function App() {
     <>
       <div className="navBar">
         <div className="appTitle">FIFO</div>
-        <div className="creditsSection">
-          <CreditSection type="A" stateValue={credits["A"]} />
-          <CreditSection type="B" stateValue={credits["B"]} />
-          <CreditSection type="C" stateValue={credits["C"]} />
-        </div>
         {/* buttons for dev mode */}
         <div className="creditsButtonSection">
           <div className="resetCredit" onClick={() => deleteCredits()}>
@@ -215,11 +191,23 @@ function App() {
       </div>
       <div className="mainContainer">
         <div className="sectionContainer">
+          <div className="titleElement">{"Crédits disponible"}</div>
+          <div className="creditsContainer">
+            {allType.map((type) => (
+              <CreditsList key={type} type={type as string} credits={credits} />
+            ))}
+          </div>
+        </div>
+        <div className="sectionContainer">
           <div className="titleElement">{"Liste d'actions"}</div>
           <div className="buttonContainer">
-            <ActionButton actionType="A" addActionToQueue={addInQueue} />
-            <ActionButton actionType="B" addActionToQueue={addInQueue} />
-            <ActionButton actionType="C" addActionToQueue={addInQueue} />
+            {allType.map((type) => (
+              <ActionButton
+                key={type}
+                actionType={type as string}
+                addActionToQueue={addInQueue}
+              />
+            ))}
           </div>
         </div>
         <div className="sectionContainer">
@@ -240,9 +228,11 @@ function App() {
               "Aucune action en attente"
             )}
           </div>
-          {alerts["A"] ? <Alert message="Crédit insuffisant : A" /> : null}
-          {alerts["B"] ? <Alert message="Crédit insuffisant : B" /> : null}
-          {alerts["C"] ? <Alert message="Crédit insuffisant : C" /> : null}
+          {allType.map((type) =>
+            alerts[type] ? (
+              <Alert key={type} message={`Crédit insuffisant : ${type}`} />
+            ) : null
+          )}
         </div>
       </div>
     </>

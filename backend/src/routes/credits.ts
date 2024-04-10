@@ -15,7 +15,7 @@ router.post("/", creditCtrl.createCredit);
 router.get("/:id", creditCtrl.getCreditById);
 router.put("/:id", creditCtrl.editCreditById);
 router.delete("/:id", creditCtrl.deleteCreditById);
-router.post("/updateCredits", creditCtrl.editAllCredits);
+router.post("/updateCredits", creditCtrl.editAllCredits); // utilisé dans updateCreditsWithController
 
 // ------------------------------------------------------------------------
 // ===== Utils =====

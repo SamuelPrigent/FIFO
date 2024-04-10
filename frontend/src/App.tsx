@@ -27,7 +27,7 @@ function App() {
   const [alertA, setAlertA] = useState<boolean>(false);
   const [alertB, setAlertB] = useState<boolean>(false);
   const [alertC, setAlertC] = useState<boolean>(false);
-  // Zustand - local storage gestion for global state
+  // Zustand for local storage management
   const {
     queueStore,
     setQueueLS,
@@ -36,7 +36,26 @@ function App() {
     removeActionFromQueueLS,
   } = useQueueStore();
 
-  // ====== Edit state ======
+  // Array : type of actions
+  const allType = ["A", "B", "C"];
+
+  // ====== Edit or get state (credits, alert) ======
+  // -- get credits state // non scalable ???
+  function getCreditsState(type: string): number | string | null {
+    switch (type) {
+      case "A":
+        return creditsA;
+      case "B":
+        return creditsB;
+      case "C":
+        return creditsC;
+      default:
+        console.error("Type inconnu:", type);
+        return null;
+    }
+  }
+
+  // -- update credits state // non scalable ???
   function updateCreditsState(type: string, number: number) {
     switch (type) {
       case "A":
@@ -53,27 +72,42 @@ function App() {
     }
   }
 
-  function resetQueue() {
-    resetQueueLS(); // local storage
+  // -- update alert state // non scalable ???
+  function updateAlertState(type: string, value: boolean) {
+    switch (type) {
+      case "A":
+        setAlertA(value);
+        break;
+      case "B":
+        setAlertB(value);
+        break;
+      case "C":
+        setAlertC(value);
+        break;
+      default:
+        console.error("Type inconnu:", type);
+    }
   }
 
   function deleteCredits() {
     console.clear();
-    putCreditsData("A", 0, -1);
+    allType.forEach((type) => {
+      putCreditsData(type, 0, -1);
+    });
+    // non scalable ??? => rajoute 1 par 1 les setState
     setCreditsA(0);
-    putCreditsData("B", 0, -1);
     setCreditsB(0);
-    putCreditsData("C", 0, -1);
     setCreditsC(0);
   }
 
   function resetCredits() {
     console.clear();
-    putCreditsData("A", 5, -1);
+    allType.forEach((type) => {
+      putCreditsData(type, 5, -1);
+    });
+    // non scalable ??? => rajoute 1 par 1 les setState
     setCreditsA(5);
-    putCreditsData("B", 5, -1);
     setCreditsB(5);
-    putCreditsData("C", 5, -1);
     setCreditsC(5);
   }
 
@@ -82,9 +116,11 @@ function App() {
   }
 
   // ========= useEffect Socket-io (get creditsData from back instantly)  =========
+  // non scalable ??? => rajouter 1 par 1 les setState
   useSocketio(setCreditsA, setCreditsB, setCreditsC);
 
   // ========= Fetch data for local state (on reload) =========
+  // non scalable ??? => rajouter 1 par 1 les setState
   useFetchAndSetCredits(setCreditsA, setCreditsB, setCreditsC);
 
   // ========= Execute prochaine action de la queue => interval 1sec =========
@@ -109,15 +145,8 @@ function App() {
               updateCreditsState(type, updatedCreditsData.number - 1);
             });
         } else {
-          if (type === "A") {
-            setAlertA(true);
-          }
-          if (type === "B") {
-            setAlertB(true);
-          }
-          if (type === "C") {
-            setAlertC(true);
-          }
+          // set alert true
+          updateAlertState(type, true);
         }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -132,46 +161,31 @@ function App() {
         executeActionByType(nextActionInQueue); // execute l'action
         removeActionFromQueueLS(0); // retire l'action du local storage
       } else {
-        // Pas d'alerte si aucune action n'est en atente
-        setAlertA(false);
-        setAlertB(false);
-        setAlertC(false);
+        // -- Pas d'alerte si aucune action n'est en atente
+        allType.forEach((type) => {
+          updateAlertState(type, false);
+        });
       }
-      // Pas d'alerte si pas de crédits X en attente ou si crédits de X > à 0
-      if (
-        (typeof creditsA === "number" && creditsA > 0) ||
-        !queueStore.includes("A")
-      ) {
-        setAlertA(false);
-      }
-      if (
-        (typeof creditsB === "number" && creditsB > 0) ||
-        !queueStore.includes("B")
-      ) {
-        setAlertB(false);
-      }
-      if (
-        (typeof creditsC === "number" && creditsC > 0) ||
-        !queueStore.includes("C")
-      ) {
-        setAlertC(false);
-      }
-      // Retire les éléments du tableau qui n'ont plus de crédits
-      if (queueStore[0] === "A" && creditsA === 0 && queueStore.includes("A")) {
-        // console.log("Remove A from queue");
-        const newQueue = queueStore.filter((item) => item !== "A");
-        setQueueLS(newQueue); // local storage
-      }
-      if (queueStore[0] === "B" && creditsB === 0 && queueStore.includes("B")) {
-        // console.log("Remove B from queue");
-        const newQueue = queueStore.filter((item) => item !== "B");
-        setQueueLS(newQueue); // local storage
-      }
-      if (queueStore[0] === "C" && creditsC === 0 && queueStore.includes("C")) {
-        // console.log("Remove C from queue");
-        const newQueue = queueStore.filter((item) => item !== "C");
-        setQueueLS(newQueue); // local storage
-      }
+      // check for all type of crédits
+      allType.forEach((type) => {
+        const creditsX = getCreditsState(type);
+        // Pas d'alerte si => pas de crédits X en attente ou si crédits de X > 0
+        if (
+          (typeof creditsX === "number" && creditsX > 0) ||
+          !queueStore.includes(`${type}`)
+        ) {
+          updateAlertState(type, false);
+        }
+        // Retire les éléments du tableau qui n'ont plus de crédits
+        if (
+          queueStore[0] === type &&
+          creditsX === 0 &&
+          queueStore.includes(type)
+        ) {
+          const newQueue = queueStore.filter((item) => item !== type);
+          setQueueLS(newQueue); // local storage
+        }
+      });
     }
     // => Inverval (1s)
     const intervalIdNextAction = setInterval(nextAction, 1000); // nextAction()
@@ -213,7 +227,7 @@ function App() {
             <div className="titleElement">{"Actions suivantes"}</div>
             {queueStore.length !== 0 ? (
               <img
-                onClick={() => resetQueue()}
+                onClick={() => resetQueueLS()}
                 src={reset2}
                 className="resetSvg2"
               />

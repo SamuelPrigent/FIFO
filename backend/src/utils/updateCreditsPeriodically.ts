@@ -1,10 +1,7 @@
 import fetch from "node-fetch";
 import "dotenv/config";
 const port: number = parseInt(process.env.PORT!) || 3000;
-
-interface ApiResponse {
-  message?: string;
-}
+import { ApiResponse } from "../types/types.js";
 
 // Update with controller via route => /api/credits/updateCredits
 async function updateCreditsWithController() {

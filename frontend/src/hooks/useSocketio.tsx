@@ -1,15 +1,11 @@
 import { useEffect } from "react";
 const PORT = import.meta.env.VITE_API_PORT || 3000; // env port
 import io from "socket.io-client"; // socket
-
-// CreditsData compatible avec tout type de key
-interface CreditsData {
-  [key: string]: number | undefined;
-}
+import { CreditsData, TypeOfCredits } from "../types/types";
 
 export function useSocketio(
   updateCreditsState: (type: string, value: number) => void,
-  allType: Array<string> // ou mieux, Array<keyof TypeOfCredits> si vous avez un type spécifique
+  allType: Array<keyof TypeOfCredits & string> // ou Array<string>
 ) {
   useEffect(() => {
     // ======== Get data via Socket ========
@@ -26,7 +22,6 @@ export function useSocketio(
         }
       });
     });
-
     // ======== Demontage composant  ========
     return () => {
       socket.disconnect(); // Déconnexion du serveur de sockets

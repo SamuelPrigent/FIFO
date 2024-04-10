@@ -1,10 +1,5 @@
 import React from "react";
-import { TypeOfCredits } from "../types/types.ts"; // Assurez-vous que le chemin est correct
-
-interface CreditsListProps {
-  type: string;
-  credits: TypeOfCredits;
-}
+import { TypeOfCredits, CreditsListProps } from "../types/types.ts"; // Assurez-vous que le chemin est correct
 
 const CreditsList: React.FC<CreditsListProps> = ({ type, credits }) => {
   const creditValue =

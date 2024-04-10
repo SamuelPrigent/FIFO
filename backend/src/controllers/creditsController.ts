@@ -1,12 +1,8 @@
 import { Credit, ICredit } from "../models/credits.js"; // credit schema
 import { Request, Response, NextFunction } from "express";
-// import fetch, { Response as FetchResponse } from "node-fetch"; // Importez Response de node-fetch
-import "dotenv/config";
-const port: number = parseInt(process.env.PORT!) || 3000;
-// socket
-import { io } from "../server.js";
+import { io } from "../server.js"; // socket
 
-// type d'action utilise dans editAllCredits
+// type d'action éxistante dans editAllCredits
 const allType: string[] = ["A", "B", "C"];
 
 // ==== Create 1 credit ====
@@ -121,7 +117,8 @@ export const deleteCreditById = async (
 };
 
 // ==== Edit All Crédits (A, B, C) ====
-// -- generate the credits with maxNumber
+
+// -- function to generate credits with maxNumber
 function generateRandomPercentage(maxNumber: number): number {
   const minPercentage: number = 0.8;
   const maxPercentage: number = 1;
@@ -130,7 +127,7 @@ function generateRandomPercentage(maxNumber: number): number {
   return Math.round(maxNumber * randomPercentage);
 }
 
-// ==== Edit All Crédits (A, B, C) ====
+// -- edit all crédits
 export const editAllCredits = async (
   req: Request,
   res: Response,
@@ -149,12 +146,10 @@ export const editAllCredits = async (
       const maxNumber = credit.maxNumber; // recup maxNumber de la BDD
       const newNumber = generateRandomPercentage(maxNumber); // génère les nouveaux crédits
       credit.number = newNumber; // Met à jour le nouveau nombre de crédits
-      await credit.save(); // Sauvegarde en BDD les changements
-
-      // Add data dans l'objet send avec le format de clés attendu par le front
+      await credit.save(); // Sauvegarde en BDD
+      // Add data in { newCredits } avec clés correspondant au format attendu par le front
       newCredits[`credits${type}`] = newNumber;
     }
-
     // Envoi de l'événement socket avec les data mise à jours
     io.emit("creditsUpdated", {
       message: "Les crédits ont été mis à jour",

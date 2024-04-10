@@ -24,7 +24,7 @@ import { TypeOfCredits, TypeOfAlerts } from "./types/types.ts";
 
 function App() {
   // allType
-  const allType: Array<keyof TypeOfCredits> = ["A", "B", "C"];
+  const allType: Array<keyof TypeOfCredits & string> = ["A", "B", "C"];
 
   // Objet généré via allType permettant de créer le state => credits
   const initialCreditsState = allType.reduce(
@@ -87,16 +87,16 @@ function App() {
   function deleteCredits() {
     console.clear();
     allType.forEach((type) => {
-      putCreditsData(type as string, 0, -1);
-      updateCreditsState(type as string, 0);
+      putCreditsData(type, 0, -1);
+      updateCreditsState(type, 0);
     });
   }
 
   function resetCredits() {
     console.clear();
     allType.forEach((type) => {
-      putCreditsData(type as string, 5, -1);
-      updateCreditsState(type as string, 5);
+      putCreditsData(type, 5, -1);
+      updateCreditsState(type, 5);
     });
   }
 
@@ -105,11 +105,11 @@ function App() {
   }
 
   // ========= useEffect Socket-io (get creditsData from back instantly)  =========
-  useSocketio(updateCreditsState, allType as string[]);
+  useSocketio(updateCreditsState, allType);
 
   // ========= Fetch data for local state for all type of credits (on reload) =========
   allType.forEach((type) => {
-    useFetchAndSetCredits(updateCreditsState, type as string);
+    useFetchAndSetCredits(updateCreditsState, type);
   });
 
   // ========= Execute prochaine action de la queue => interval 1sec =========
@@ -152,7 +152,7 @@ function App() {
       } else {
         // -- Pas d'alerte si aucune action n'est en atente
         allType.forEach((type) => {
-          updateAlertState(type as string, false);
+          updateAlertState(type, false);
         });
       }
       // check for all type of crédits
@@ -163,7 +163,7 @@ function App() {
           (typeof creditsX === "number" && creditsX > 0) ||
           !queueStore.includes(`${type}`)
         ) {
-          updateAlertState(type as string, false);
+          updateAlertState(type, false);
         }
         // Retire les éléments du tableau qui n'ont plus de crédits
         if (
@@ -202,7 +202,7 @@ function App() {
           <div className="titleElement">{"Crédits disponible"}</div>
           <div className="creditsContainer">
             {allType.map((type) => (
-              <CreditsList key={type} type={type as string} credits={credits} />
+              <CreditsList key={type} type={type} credits={credits} />
             ))}
           </div>
         </div>
@@ -212,7 +212,7 @@ function App() {
             {allType.map((type) => (
               <ActionButton
                 key={type}
-                actionType={type as string}
+                actionType={type}
                 addActionToQueue={addInQueue}
               />
             ))}

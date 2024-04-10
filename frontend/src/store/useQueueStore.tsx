@@ -1,13 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-interface QueueState {
-  queueStore: string[];
-  addInQueueLS: (actionType: string) => void;
-  resetQueueLS: () => void;
-  removeActionFromQueueLS: (index: number) => void;
-  setQueueLS: (newQueue: string[]) => void; // Ajout de la nouvelle méthode
-}
+import { QueueState } from "../types/types";
 
 const useQueueStore = create(
   persist<QueueState>(

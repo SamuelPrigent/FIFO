@@ -1,8 +1,5 @@
 import React from "react";
-
-interface QueueListProps {
-  queue: string[];
-}
+import { QueueListProps } from "../types/types";
 
 const QueueList: React.FC<QueueListProps> = ({ queue }) => {
   return (

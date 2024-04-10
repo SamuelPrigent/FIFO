@@ -1,12 +1,7 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { ICredit } from "../types/types.js";
 
 const validNames: string[] = ["A", "B", "C"];
-
-interface ICredit extends Document {
-  name: string;
-  number: number;
-  maxNumber: number;
-}
 
 const creditSchema: Schema = new mongoose.Schema({
   name: {

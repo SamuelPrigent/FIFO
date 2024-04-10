@@ -1,7 +1,4 @@
-interface ActionButtonProps {
-  actionType: string;
-  addActionToQueue: (actionType: string) => void;
-}
+import { ActionButtonProps } from "../types/types"; // types
 
 const ActionButton: React.FC<ActionButtonProps> = ({
   actionType,

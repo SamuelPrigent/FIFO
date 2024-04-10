@@ -1,12 +1,5 @@
 const PORT = import.meta.env.VITE_API_PORT || 3000; // env port
-
-interface CreditData {
-  _id: string;
-  name: string;
-  number: number;
-  maxNumber: number;
-  __v: number;
-}
+import { CreditData } from "../types/types.ts"; // types
 
 // fetch data return data
 export async function fetchCreditsData(name: string): Promise<CreditData> {

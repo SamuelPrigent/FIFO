@@ -13,7 +13,7 @@ async function updateCreditsWithController() {
     const response = await fetch(
       `http://localhost:${port}/api/credits/updateCredits`,
       {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },

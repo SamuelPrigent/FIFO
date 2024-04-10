@@ -1,6 +1,6 @@
 import { Credit, ICredit } from "../models/credits.js"; // credit schema
 import { Request, Response, NextFunction } from "express";
-import fetch, { Response as FetchResponse } from "node-fetch"; // Importez Response de node-fetch
+// import fetch, { Response as FetchResponse } from "node-fetch"; // Importez Response de node-fetch
 import "dotenv/config";
 const port: number = parseInt(process.env.PORT!) || 3000;
 // socket
@@ -130,91 +130,43 @@ function generateRandomPercentage(maxNumber: number): number {
   return Math.round(maxNumber * randomPercentage);
 }
 
-// -- Edit all crédits
+// ==== Edit All Crédits (A, B, C) ====
 export const editAllCredits = async (
-  // io:
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<Response> => {
   try {
-    // === Fetch maxCredits [A, B, C]
-    // -- Fetch maxCreditsA
-    const responseA: FetchResponse = await fetch(
-      `http://localhost:${port}/api/credits/A`
-    );
-    const dataA: { maxNumber: number; __v: number } =
-      (await responseA.json()) as {
-        maxNumber: number;
-        __v: number;
-      };
-    const maxCreditsA: number = dataA.maxNumber;
-    const versionCreditsA: number = dataA.__v;
-    // -- Fetch maxCreditsB
-    const responseB: FetchResponse = await fetch(
-      `http://localhost:${port}/api/credits/B`
-    );
-    const dataB: { maxNumber: number; __v: number } =
-      (await responseB.json()) as {
-        maxNumber: number;
-        __v: number;
-      };
-    const maxCreditsB: number = dataB.maxNumber;
-    const versionCreditsB: number = dataB.__v;
-    // -- Fetch maxCreditsC
-    const responseC: FetchResponse = await fetch(
-      `http://localhost:${port}/api/credits/C`
-    );
-    const dataC: { maxNumber: number; __v: number } =
-      (await responseC.json()) as {
-        maxNumber: number;
-        __v: number;
-      };
-    const maxCreditsC: number = dataC.maxNumber;
-    const versionCreditsC: number = dataC.__v;
-    // === Calculate random credits and update
-    const randomCreditsA: number = generateRandomPercentage(maxCreditsA);
-    const randomCreditsB: number = generateRandomPercentage(maxCreditsB);
-    const randomCreditsC: number = generateRandomPercentage(maxCreditsC);
-    // === PUT request to update credits
-    await Promise.all([
-      fetch(`http://localhost:${port}/api/credits/A`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ number: randomCreditsA, __v: versionCreditsA }),
-      }),
-      fetch(`http://localhost:${port}/api/credits/B`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ number: randomCreditsB, __v: versionCreditsB }),
-      }),
-      fetch(`http://localhost:${port}/api/credits/C`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ number: randomCreditsC, __v: versionCreditsC }),
-      }),
-    ]);
-    // Response
-    console.log(`All credits updated (controller)`);
-    // Socket event
+    // Objet qui stocke les nouvelles data => response + socket
+    const newCredits = {};
+    // Boucle sur les ≠ type de crédits
+    for (const type of allType) {
+      const credit = await Credit.findOne({ name: type }); // Recherche en BDD
+      if (!credit) {
+        console.log(`Credits ${type} non éxistant`);
+        continue; // => passe au prochain crédits
+      }
+      const maxNumber = credit.maxNumber; // recup maxNumber de la BDD
+      const newNumber = generateRandomPercentage(maxNumber); // génère les nouveaux crédits
+      credit.number = newNumber; // Met à jour le nouveau nombre de crédits
+      await credit.save(); // Sauvegarde en BDD les changements
+
+      // Add data dans l'objet send avec le format de clés attendu par le front
+      newCredits[`credits${type}`] = newNumber;
+    }
+
+    // Envoi de l'événement socket avec les data mise à jours
     io.emit("creditsUpdated", {
       message: "Les crédits ont été mis à jour",
-      creditsA: randomCreditsA,
-      creditsB: randomCreditsB,
-      creditsC: randomCreditsC,
+      ...newCredits,
     });
-    //
+    console.log("All credits updated (controller)");
     return res
       .status(200)
-      .json({ message: "All credits updated successfully" });
+      .json({ message: "All credits updated successfully", ...newCredits });
   } catch (error) {
     console.error("Error updating credits:", error);
+    return res.status(500).json({ message: "Error updating credits", error });
   }
 };
 

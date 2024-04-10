@@ -11,11 +11,13 @@ import createAllCreditsIfNotExist from "../utils/createCreditsIfNotExist.js";
 
 // ------------------------------------------------------------------------
 // ===== Routes =====
+// -- statiques
 router.post("/", creditCtrl.createCredit);
+router.put("/updateCredits", creditCtrl.editAllCredits);
+// -- dynamique
 router.get("/:id", creditCtrl.getCreditById);
 router.put("/:id", creditCtrl.editCreditById);
 router.delete("/:id", creditCtrl.deleteCreditById);
-router.post("/updateCredits", creditCtrl.editAllCredits); // utilisé dans updateCreditsWithController
 
 // ------------------------------------------------------------------------
 // ===== Utils =====

@@ -16,17 +16,46 @@ import QueueList from "./components/QueueList";
 import { fetchCreditsData, putCreditsData } from "./api/creditsRequests";
 // hooks
 import { useSocketio } from "./hooks/useSocketio";
+// import { useFetchAndSetCredits } from "./hooks/useFetchAndSetCredits";
 import { useFetchAndSetCredits } from "./hooks/useFetchAndSetCredits";
 // zustand state
 import useQueueStore from "./store/useQueueStore";
 
 function App() {
-  const [creditsA, setCreditsA] = useState<number | string | null>(null);
-  const [creditsB, setCreditsB] = useState<number | string | null>(null);
-  const [creditsC, setCreditsC] = useState<number | string | null>(null);
-  const [alertA, setAlertA] = useState<boolean>(false);
-  const [alertB, setAlertB] = useState<boolean>(false);
-  const [alertC, setAlertC] = useState<boolean>(false);
+  // ======= credits =======
+
+  // type plus scalable ????
+  // on verra après pour modifier ce type // => type utilisé dans putCreditData
+  // interface TypeOfCredits {
+  //   [key: string]: number | string | null;
+  // }
+
+  // credits type
+  interface TypeOfCredits {
+    A: number | string | null;
+    B: number | string | null;
+    C: number | string | null;
+  }
+  //  alert type
+  interface TypeOfAlerts {
+    A: boolean;
+    B: boolean;
+    C: boolean;
+  }
+
+  // credits state
+  const [credits, setCredits] = useState<TypeOfCredits>({
+    A: null,
+    B: null,
+    C: null,
+  });
+  // alert state
+  const [alerts, setAlerts] = useState<TypeOfAlerts>({
+    A: false,
+    B: false,
+    C: false,
+  });
+
   // Zustand for local storage management
   const {
     queueStore,
@@ -36,79 +65,50 @@ function App() {
     removeActionFromQueueLS,
   } = useQueueStore();
 
-  // Array : type of actions
-  const allType = ["A", "B", "C"];
+  // array: allType used for scalability
+  const allType: Array<keyof TypeOfCredits> = ["A", "B", "C"];
 
-  // ====== Edit or get state (credits, alert) ======
-  // -- get credits state // non scalable ???
-  function getCreditsState(type: string): number | string | null {
-    switch (type) {
-      case "A":
-        return creditsA;
-      case "B":
-        return creditsB;
-      case "C":
-        return creditsC;
-      default:
-        console.error("Type inconnu:", type);
-        return null;
+  // ====== Edit and Get local state of credits by (type) ======
+
+  function getCreditsState(type: keyof TypeOfCredits): number | string | null {
+    // Assurez-vous que `credits` est l'état contenant tous les types de crédits.
+    const creditValue = credits[type];
+    if (creditValue !== undefined) {
+      return creditValue;
+    } else {
+      console.error("Type inconnu:", type);
+      return null;
     }
   }
 
-  // -- update credits state // non scalable ???
-  function updateCreditsState(type: string, number: number) {
-    switch (type) {
-      case "A":
-        setCreditsA(number);
-        break;
-      case "B":
-        setCreditsB(number);
-        break;
-      case "C":
-        setCreditsC(number);
-        break;
-      default:
-        console.error("Type inconnu:", type);
-    }
+  function updateCreditsState(type: string, value: number) {
+    setCredits((prevCredits) => ({
+      ...prevCredits,
+      [type]: value,
+    }));
   }
 
-  // -- update alert state // non scalable ???
   function updateAlertState(type: string, value: boolean) {
-    switch (type) {
-      case "A":
-        setAlertA(value);
-        break;
-      case "B":
-        setAlertB(value);
-        break;
-      case "C":
-        setAlertC(value);
-        break;
-      default:
-        console.error("Type inconnu:", type);
-    }
+    setAlerts((prevAlerts) => ({
+      ...prevAlerts,
+      [type]: value,
+    }));
   }
 
   function deleteCredits() {
     console.clear();
     allType.forEach((type) => {
       putCreditsData(type, 0, -1);
+      updateCreditsState(type, 0);
     });
-    // non scalable ??? => rajoute 1 par 1 les setState
-    setCreditsA(0);
-    setCreditsB(0);
-    setCreditsC(0);
   }
 
   function resetCredits() {
     console.clear();
     allType.forEach((type) => {
       putCreditsData(type, 5, -1);
+      updateCreditsState(type, 5);
     });
-    // non scalable ??? => rajoute 1 par 1 les setState
-    setCreditsA(5);
-    setCreditsB(5);
-    setCreditsC(5);
   }
 
   function addInQueue(actionType: string) {
@@ -116,12 +116,12 @@ function App() {
   }
 
   // ========= useEffect Socket-io (get creditsData from back instantly)  =========
-  // non scalable ??? => rajouter 1 par 1 les setState
-  useSocketio(setCreditsA, setCreditsB, setCreditsC);
+  useSocketio(updateCreditsState, allType);
 
-  // ========= Fetch data for local state (on reload) =========
-  // non scalable ??? => rajouter 1 par 1 les setState
-  useFetchAndSetCredits(setCreditsA, setCreditsB, setCreditsC);
+  // ========= Fetch data for local state for all type of credits (on reload) =========
+  allType.forEach((type) => {
+    useFetchAndSetCredits(updateCreditsState, type);
+  });
 
   // ========= Execute prochaine action de la queue => interval 1sec =========
   useEffect(() => {
@@ -192,16 +192,16 @@ function App() {
     return () => {
       clearInterval(intervalIdNextAction);
     };
-  }, [queueStore, creditsA, creditsB, creditsC]);
+  }, [queueStore, credits]);
 
   return (
     <>
       <div className="navBar">
         <div className="appTitle">FIFO</div>
         <div className="creditsSection">
-          <CreditSection type="A" stateValue={creditsA} />
-          <CreditSection type="B" stateValue={creditsB} />
-          <CreditSection type="C" stateValue={creditsC} />
+          <CreditSection type="A" stateValue={credits["A"]} />
+          <CreditSection type="B" stateValue={credits["B"]} />
+          <CreditSection type="C" stateValue={credits["C"]} />
         </div>
         {/* buttons for dev mode */}
         <div className="creditsButtonSection">
@@ -240,9 +240,9 @@ function App() {
               "Aucune action en attente"
             )}
           </div>
-          {alertA ? <Alert message="Crédit insuffisant : A" /> : null}
-          {alertB ? <Alert message="Crédit insuffisant : B" /> : null}
-          {alertC ? <Alert message="Crédit insuffisant : C" /> : null}
+          {alerts["A"] ? <Alert message="Crédit insuffisant : A" /> : null}
+          {alerts["B"] ? <Alert message="Crédit insuffisant : B" /> : null}
+          {alerts["C"] ? <Alert message="Crédit insuffisant : C" /> : null}
         </div>
       </div>
     </>

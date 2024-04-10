@@ -1,17 +1,15 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { useEffect } from "react";
 const PORT = import.meta.env.VITE_API_PORT || 3000; // env port
 import io from "socket.io-client"; // socket
 
+// CreditsData compatible avec tout type de key
 interface CreditsData {
-  creditsA?: number;
-  creditsB?: number;
-  creditsC?: number;
+  [key: string]: number | undefined;
 }
 
 export function useSocketio(
-  setCreditsA: Dispatch<SetStateAction<number | string | null>>,
-  setCreditsB: Dispatch<SetStateAction<number | string | null>>,
-  setCreditsC: Dispatch<SetStateAction<number | string | null>>
+  updateCreditsState: (type: string, value: number) => void,
+  allType: Array<string> // ou mieux, Array<keyof TypeOfCredits> si vous avez un type spécifique
 ) {
   useEffect(() => {
     // ======== Get data via Socket ========
@@ -19,15 +17,14 @@ export function useSocketio(
     // Ecoute "creditsUpdated" depuis le back
     socket.on("creditsUpdated", (data: CreditsData) => {
       // console.log(data.message);
-      if (data.creditsA) {
-        setCreditsA(`${data.creditsA}`);
-      }
-      if (data.creditsB) {
-        setCreditsB(`${data.creditsB}`);
-      }
-      if (data.creditsC) {
-        setCreditsC(`${data.creditsC}`);
-      }
+      // Update le state après vérification que la data reçu possède bien une data avec la Key demandé
+      allType.forEach((type) => {
+        const key = `credits${type}`;
+        const value = data[key];
+        if (value !== undefined) {
+          updateCreditsState(type, value);
+        }
+      });
     });
 
     // ======== Demontage composant  ========

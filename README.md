@@ -48,5 +48,4 @@ Run MongoDB Compass (on MacOS):
 ## Add new type of actions
 
 - Edit `CreditList` in backend/.env and `restart server`
-- Edit `allType` array in frontend/src/App.tsx with same variables and refresh page
-- Everything in backend and frontend scale on thoses variables
+- Edit `allType` array in frontend/src/App.tsx with same variables and refresh the page

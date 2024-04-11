@@ -57,7 +57,6 @@ export const getCreditById = async (
   }
 };
 
-// ==== Get All credit ====
 // ==== Get All Credits ====
 export const getAllCredits = async (
   req: Request,
@@ -143,9 +142,9 @@ export const deleteCreditById = async (
   }
 };
 
-// ==== Edit All Crédits (A, B, C) ====
+// ==== Dev mode functionnality ====
 
-// -- function to generate credits with maxNumber
+// -- function to generate credits with maxNumber (dev mode)
 function generateRandomPercentage(maxNumber: number): number {
   const minPercentage: number = 0.8;
   const maxPercentage: number = 1;
@@ -154,7 +153,7 @@ function generateRandomPercentage(maxNumber: number): number {
   return Math.round(maxNumber * randomPercentage);
 }
 
-// -- edit all crédits
+// -- edit all crédits (dev mode)
 export const editAllCredits = async (
   req: Request,
   res: Response,

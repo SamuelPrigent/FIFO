@@ -4,6 +4,10 @@
 
 - Explore a FIFO (First In, First Out) queue system implemented in this project, where you can put to queue differents type of actions for execution.
 
+## Node version
+
+Required: Node.js v21.6+. Update/install from Node.js
+
 ## Configuration of Local Database
 
 - This guide explains how to configure your machine to use a local database with MongoDB Compass : [MongoDB Documentation](https://www.mongodb.com/docs/manual/administration/configuration/#std-label-base-config)
@@ -40,3 +44,9 @@ Run MongoDB Compass (on MacOS):
 - Navigate to the backend folder
 - Cancel `npm run dev` processus
 - Use `npm run test`
+
+## Add new type of actions
+
+- Edit `CreditList` in backend/.env and `restart server`
+- Edit `allType` array in frontend/src/App.tsx with same variables and refresh page
+- Everything in backend and frontend scale on thoses variables

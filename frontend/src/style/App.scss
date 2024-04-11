@@ -1,52 +1,31 @@
-// import
+// mixins
 @import "mixins";
 // colors
 $darkblue: #001a72;
-
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #213547;
-  background-color: #ffffff;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+// theme element
+.greenTheme {
+  @include greenButton;
 }
-
-#root {
-  min-height: 100vh;
-  width: 100%;
-  text-align: center;
-  background-color: #ffffff;
+.blueTheme {
+  @include blueButton;
 }
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+.redTheme {
+  @include redButton;
 }
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #f9f9f9;
-  cursor: pointer;
-  transition: border-color 0.25s;
+.purpleTheme {
+  @include purpleButton;
 }
-button:hover {
-  border-color: #646cff;
+.orangeTheme {
+  @include orangeButton;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.seablueTheme {
+  @include seablueButton;
+}
+.pinkredTheme {
+  @include pinkredButton;
+}
+.magicTheme {
+  @include magicButton;
 }
 
 .mainContainer {
@@ -55,43 +34,42 @@ button:focus-visible {
   height: auto;
   width: 100%;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 25px;
   gap: 20px;
 }
 
 .sectionContainer {
-  margin-top: 15px;
+  margin-top: 5px;
   gap: 15px;
   flex-direction: column;
   display: flex;
 }
 
-// credits section
 .creditsContainer {
-  // display: flex;
   gap: 15px;
   justify-content: center;
-  // test
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  min-width: 700px;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  min-width: 610px;
   margin: 0 auto;
 }
 
-// button section
 .buttonContainer {
   gap: 15px;
   justify-content: center;
-  // display: flex;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  min-width: 700px;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  min-width: 610px;
   margin: 0 auto;
+}
+
+.buttonContainer *:hover {
+  filter: brightness(0.95);
 }
 
 .actionButton {
   padding: 8px 15px;
-  border: 2px solid black;
+  border: 2px solid;
 }
 
 .actionButton:focus {
@@ -110,7 +88,7 @@ button:focus-visible {
   width: 100%;
   background-color: #f7eaf1;
   margin-top: 0px;
-  padding: 14px 20px;
+  padding: 12px 20px;
   box-sizing: border-box;
   justify-content: space-between;
   color: $darkblue;
@@ -122,7 +100,6 @@ button:focus-visible {
   color: $darkblue;
 }
 
-/* credits */
 .creditsSection {
   display: flex;
   gap: 40px;
@@ -174,42 +151,6 @@ button:focus-visible {
   align-items: center;
 }
 
-.buttonContainer :nth-child(1),
-.taskA,
-.creditsA {
-  @include greenButton;
-}
-
-.buttonContainer :nth-child(2),
-.taskB,
-.creditsB {
-  @include blueButton;
-}
-
-.buttonContainer :nth-child(3),
-.taskC,
-.creditsC {
-  @include redButton;
-}
-
-// non scalable ??? - utiliser style component ?
-.buttonContainer :nth-child(n + 4),
-.taskD,
-.taskE,
-.taskF {
-  @include purpleButton;
-}
-//
-.creditsD,
-.creditsE,
-.creditsF {
-  @include purpleButton;
-}
-
-.buttonContainer *:hover {
-  filter: brightness(0.95);
-}
-
 .queueList {
   margin: 10px auto;
   max-width: 620px;
@@ -232,7 +173,6 @@ button:focus-visible {
 }
 
 .creditsButton {
-  // border: 2px solid;
   border-radius: 8px;
   height: 34px;
   padding: 0px 18px;
@@ -256,4 +196,10 @@ button:focus-visible {
 .arrowQueue {
   font-size: 22px;
   font-weight: bold;
+}
+
+.arrowQueueWhite {
+  font-size: 22px;
+  font-weight: bold;
+  color: transparent;
 }

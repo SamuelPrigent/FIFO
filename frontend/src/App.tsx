@@ -21,15 +21,22 @@ import { useFetchAndSetCredits } from "./hooks/useFetchAndSetCredits";
 import useQueueStore from "./store/useQueueStore";
 // types
 import { TypeOfCredits, TypeOfAlerts } from "./types/types.ts";
+// utils
+import { useCreditActions } from "./utils/useCreditActions.ts";
 
 function App() {
-  // allType (static)
+  // allType of actions
   const allType: Array<keyof TypeOfCredits & string> = [
     "A",
     "B",
     "C",
     "D",
     "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
   ];
 
   // Objet généré via allType permettant de créer le state => credits
@@ -54,7 +61,16 @@ function App() {
   const [credits, setCredits] = useState<TypeOfCredits>(initialCreditsState);
   const [alerts, setAlerts] = useState<TypeOfAlerts>(initialAlertsState);
 
-  // Zustand for local storage management
+  // ====== Edit and Get local state of credits by (type) ======
+  const {
+    getCreditsState,
+    updateCreditsState,
+    updateAlertState,
+    deleteCredits,
+    resetCredits,
+  } = useCreditActions(allType, setCredits, setAlerts, credits);
+
+  // ====== Import zustand for local storage management ======
   const {
     queueStore,
     setQueueLS,
@@ -62,53 +78,6 @@ function App() {
     resetQueueLS,
     removeActionFromQueueLS,
   } = useQueueStore();
-
-  // ====== Edit and Get local state of credits by (type) ======
-
-  function getCreditsState(type: keyof TypeOfCredits): number | string | null {
-    // Assurez-vous que `credits` est l'état contenant tous les types de crédits.
-    const creditValue = credits[type];
-    if (creditValue !== undefined) {
-      return creditValue;
-    } else {
-      console.error("Type inconnu:", type);
-      return null;
-    }
-  }
-
-  function updateCreditsState(type: string, value: number) {
-    setCredits((prevCredits) => ({
-      ...prevCredits,
-      [type]: value,
-    }));
-  }
-
-  function updateAlertState(type: string, value: boolean) {
-    setAlerts((prevAlerts) => ({
-      ...prevAlerts,
-      [type]: value,
-    }));
-  }
-
-  function deleteCredits() {
-    console.clear();
-    allType.forEach((type) => {
-      putCreditsData(type, 0, -1);
-      updateCreditsState(type, 0);
-    });
-  }
-
-  function resetCredits() {
-    console.clear();
-    allType.forEach((type) => {
-      putCreditsData(type, 5, -1);
-      updateCreditsState(type, 5);
-    });
-  }
-
-  function addInQueue(actionType: string) {
-    addInQueueLS(actionType); // local storage
-  }
 
   // ========= useEffect Socket-io (get creditsData from back instantly)  =========
   useSocketio(updateCreditsState, allType);
@@ -118,11 +87,11 @@ function App() {
     useFetchAndSetCredits(updateCreditsState, type);
   });
 
-  // ========= Execute prochaine action de la queue => interval 1sec =========
+  // ========= Execute nextAction in queueStore[0]  // interval 1sec =========
   useEffect(() => {
     async function executeActionByType(type: string) {
       try {
-        const creditsData = await fetchCreditsData(`${type}`); // get data : fetchCreditsData("A")
+        const creditsData = await fetchCreditsData(`${type}`); // get data
         const databaseCredits = creditsData.number; // get : data.number // check via database
         if (databaseCredits > 0) {
           putCreditsData(`${type}`, databaseCredits - 1, creditsData.__v) // Update Database with data
@@ -207,19 +176,25 @@ function App() {
         <div className="sectionContainer">
           <div className="titleElement">{"Crédits disponible"}</div>
           <div className="creditsContainer">
-            {allType.map((type) => (
-              <CreditsList key={type} type={type} credits={credits} />
+            {allType.map((type, index) => (
+              <CreditsList
+                key={type}
+                type={type}
+                credits={credits}
+                index={index}
+              />
             ))}
           </div>
         </div>
         <div className="sectionContainer">
           <div className="titleElement">{"Liste d'actions"}</div>
           <div className="buttonContainer">
-            {allType.map((type) => (
+            {allType.map((type, index) => (
               <ActionButton
                 key={type}
                 actionType={type}
-                addActionToQueue={addInQueue}
+                addActionToQueue={addInQueueLS}
+                index={index}
               />
             ))}
           </div>

@@ -1,6 +1,17 @@
+import { Dispatch, SetStateAction } from "react";
 // === Type ===
-// app.tsx
+// --- app.tsx ---
+// credits
+export type CreditsState = {
+  [key: string]: number | string | null;
+};
+export type SetCreditsFunction = Dispatch<SetStateAction<CreditsState>>;
 export type TypeOfCredits = { [key: string]: number | string | null };
+// alert
+export type AlertState = {
+  [key: string]: boolean;
+};
+export type SetAlertsFunction = Dispatch<SetStateAction<AlertState>>;
 export type TypeOfAlerts = { [key: string]: boolean };
 
 // === Interface ===
@@ -17,6 +28,7 @@ export interface CreditData {
 export interface ActionButtonProps {
   actionType: string;
   addActionToQueue: (actionType: string) => void;
+  index: number;
 }
 
 // components/Alert
@@ -28,6 +40,7 @@ export interface AlertProps {
 export interface CreditsListProps {
   type: string;
   credits: TypeOfCredits;
+  index: number;
 }
 
 // components/QueueList

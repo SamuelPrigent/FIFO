@@ -1,9 +1,12 @@
-import { Credit, ICredit } from "../models/credits.js"; // credit schema
+import { Credit } from "../models/credits.js"; // credit schema
+import { ICredit } from "../types/types.js";
 import { Request, Response, NextFunction } from "express";
 import { io } from "../server.js"; // socket
+import "dotenv/config";
 
-// type d'action éxistante dans editAllCredits
-const allType: string[] = ["A", "B", "C"];
+// credits from .env
+const allTypeString: string = process.env.CreditList || "";
+const allType: string[] = allTypeString.split(",");
 
 // ==== Create 1 credit ====
 export const createCredit = async (
@@ -48,6 +51,30 @@ export const getCreditById = async (
     // Response
     return res.status(200).json(credit);
     // return;
+  } catch (error) {
+    // Gère les erreurs
+    next(error);
+  }
+};
+
+// ==== Get All credit ====
+// ==== Get All Credits ====
+export const getAllCredits = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response> => {
+  try {
+    // Recherche en BDD pour obtenir tous les crédits
+    const credits = await Credit.find({}); // Pas de condition spécifique pour obtenir tous les crédits
+
+    // Si aucun crédit n'est trouvé, on peut choisir de renvoyer une réponse indiquant qu'aucun crédit n'est disponible
+    if (!credits || credits.length === 0) {
+      return res.status(404).json({ message: "Aucun crédit trouvé" });
+    }
+
+    // Response avec la liste de tous les crédits
+    return res.status(200).json(credits);
   } catch (error) {
     // Gère les erreurs
     next(error);
@@ -168,6 +195,7 @@ export const editAllCredits = async (
 export default {
   createCredit,
   getCreditById,
+  getAllCredits,
   editCreditById,
   deleteCreditById,
   editAllCredits,

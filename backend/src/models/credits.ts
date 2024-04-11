@@ -1,7 +1,9 @@
 import mongoose, { Schema } from "mongoose";
 import { ICredit } from "../types/types.js";
+import "dotenv/config";
 
-const validNames: string[] = ["A", "B", "C"];
+const validNamesString: string = process.env.CreditList || "";
+const validNames: string[] = validNamesString.split(",");
 
 const creditSchema: Schema = new mongoose.Schema({
   name: {
@@ -32,4 +34,4 @@ creditSchema.pre<ICredit>("save", function (next) {
 
 const Credit = mongoose.model<ICredit>("Credit", creditSchema);
 
-export { Credit, ICredit };
+export { Credit };

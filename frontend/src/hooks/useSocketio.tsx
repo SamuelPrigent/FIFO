@@ -22,6 +22,7 @@ export function useSocketio(
         }
       });
     });
+
     // ======== Demontage composant  ========
     return () => {
       socket.disconnect(); // Déconnexion du serveur de sockets

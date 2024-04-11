@@ -61,24 +61,40 @@ button:focus-visible {
 
 .sectionContainer {
   margin-top: 15px;
-  display: flex;
-  flex-direction: column;
   gap: 15px;
+  flex-direction: column;
+  display: flex;
 }
 
-.buttonContainer,
+// credits section
 .creditsContainer {
-  display: flex;
+  // display: flex;
   gap: 15px;
   justify-content: center;
+  // test
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  min-width: 700px;
+  margin: 0 auto;
 }
 
-.buttonType {
+// button section
+.buttonContainer {
+  gap: 15px;
+  justify-content: center;
+  // display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  min-width: 700px;
+  margin: 0 auto;
+}
+
+.actionButton {
   padding: 8px 15px;
   border: 2px solid black;
 }
 
-.buttonType:focus {
+.actionButton:focus {
   outline: none;
 }
 

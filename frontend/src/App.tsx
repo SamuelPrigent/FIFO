@@ -23,8 +23,14 @@ import useQueueStore from "./store/useQueueStore";
 import { TypeOfCredits, TypeOfAlerts } from "./types/types.ts";
 
 function App() {
-  // allType
-  const allType: Array<keyof TypeOfCredits & string> = ["A", "B", "C"];
+  // allType (static)
+  const allType: Array<keyof TypeOfCredits & string> = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+  ];
 
   // Objet généré via allType permettant de créer le state => credits
   const initialCreditsState = allType.reduce(

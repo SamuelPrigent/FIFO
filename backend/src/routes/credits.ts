@@ -26,7 +26,7 @@ router.delete("/:id", creditCtrl.deleteCreditById);
 // --- Generate credits
 generateCredits(); // server start
 generateCreditsPeriodically(); // every 25s
-// --- Set up database (create / delete credits)
+// --- Set up database (create / delete => credits)
 createAllCreditsIfNotExist();
 deleteCreditsIfShouldNotExist();
 

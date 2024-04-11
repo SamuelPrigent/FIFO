@@ -7,7 +7,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   return (
     <button
       id={`type${actionType}`}
-      className="buttonType"
+      className="actionButton"
       onClick={() => addActionToQueue(actionType)}
     >
       Type {actionType}

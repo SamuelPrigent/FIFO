@@ -144,7 +144,7 @@ export const deleteCreditById = async (
 
 // ==== Dev mode functionnality ====
 
-// -- function to generate credits with maxNumber (dev mode)
+// (dev mode) -- function to generate credits with maxNumber
 function generateRandomPercentage(maxNumber: number): number {
   const minPercentage: number = 0.8;
   const maxPercentage: number = 1;
@@ -153,7 +153,7 @@ function generateRandomPercentage(maxNumber: number): number {
   return Math.round(maxNumber * randomPercentage);
 }
 
-// -- edit all crédits (dev mode)
+// (dev mode) -- edit all crédits
 export const editAllCredits = async (
   req: Request,
   res: Response,

@@ -7,13 +7,9 @@ const CreditsList: React.FC<CreditsListProps> = ({ type, credits }) => {
       ? credits[type as keyof TypeOfCredits]
       : "?";
   return (
-    <div className="queueListComponent">
-      <div className="creditsContainer">
-        <span className={`creditsButton credits${type}`}>
-          {`${type} : ${creditValue}`}
-        </span>
-      </div>
-    </div>
+    <span className={`creditsButton credits${type}`}>
+      {`${type} : ${creditValue}`}
+    </span>
   );
 };
 

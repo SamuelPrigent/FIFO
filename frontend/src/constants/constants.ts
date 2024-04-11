@@ -3,9 +3,12 @@ export const colors: string[] = [
   "blueTheme",
   "redTheme",
   "purpleTheme",
+  "magicTheme",
   "orangeTheme",
   "pinkredTheme",
-  "magicTheme",
+  "venusTheme",
+  "pandaTheme",
+  "marsTheme",
 ];
 
 export const actionTypes: string[] = [

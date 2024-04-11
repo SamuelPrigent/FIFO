@@ -27,6 +27,15 @@ $darkblue: #001a72;
 .magicTheme {
   @include magicButton;
 }
+.pandaTheme {
+  @include pandaButton;
+}
+.marsTheme {
+  @include marsButton;
+}
+.venusTheme {
+  @include venusButton;
+}
 
 .mainContainer {
   display: flex;

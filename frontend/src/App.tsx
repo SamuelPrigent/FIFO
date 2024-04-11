@@ -125,7 +125,7 @@ function App() {
         executeActionByType(nextActionInQueue); // execute l'action
         removeActionFromQueueLS(0); // retire l'action du local storage
       } else {
-        // -- Pas d'alerte si aucune action n'est en atente
+        // Pas d'alerte si aucune action n'est en atente
         allType.forEach((type) => {
           updateAlertState(type, false);
         });

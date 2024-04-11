@@ -1,20 +1,20 @@
 @mixin redButton {
   user-select: none;
-  background-color: lightpink;
+  background-color: #ffd0e6;
   color: darkred;
   border-color: darkred;
 }
 
 @mixin greenButton {
   user-select: none;
-  background-color: lightgreen;
+  background-color: #a0f8a0;
   color: #004e00;
   border-color: darkgreen;
 }
 
 @mixin blueButton {
   user-select: none;
-  background-color: lightblue;
+  background-color: #b2ecff;
   color: darkblue;
   border-color: darkblue;
 }
@@ -52,4 +52,25 @@
   background-color: #c8ffe1;
   color: #004020;
   border-color: #004020;
+}
+
+@mixin pandaButton {
+  user-select: none;
+  background-color: #c7e3ff;
+  color: #480045;
+  border-color: #480045;
+}
+
+@mixin marsButton {
+  user-select: none;
+  background-color: #e8edff;
+  color: #0c0041;
+  border-color: #0c0041;
+}
+
+@mixin venusButton {
+  user-select: none;
+  background-color: #cfffc7;
+  color: #003061;
+  border-color: #003061;
 }

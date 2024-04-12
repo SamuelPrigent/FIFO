@@ -6,7 +6,7 @@
 - Every 1-sec, next action is executed and costs 1 credits (actionA uses creditsA, action B uses creditsB, etc).
 - Every 25-sec, credits are regenerated within a range of 80-100% of their maximum value.
 
-##### If You Want To Add New Types Of Actions
+### If You Want To Add New Types Of Actions
 
 - Everything in the project (front, back, and back tests) is design to scale :
 - In backend/.env file: edit `CreditList` and restart the server.

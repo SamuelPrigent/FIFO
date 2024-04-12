@@ -1,12 +1,16 @@
-# React + NodeJS
+# React / NodeJS
 
-## Project description
+### Description
 
-- Explore a FIFO (First In, First Out) queue system implemented in this project, where you can put to queue differents type of actions for execution.
+- Explore a FIFO (First In, First Out) queue system implemented in this project, where you can enqueue different types of actions for execution.
+- Every 1-sec, next action is executed and costs 1 credits (actionA uses creditsA, action B uses creditsB, etc).
+- Every 25-sec, credits are regenerated within a range of 80-100% of their maximum value.
 
-## Node version
+##### If You Want To Add New Types Of Actions
 
-Required: Node.js v21.6+. Update/install from Node.js
+- Everything in the project (front, back, and back tests) is design to scale :
+- In backend/.env file: edit `CreditList` and restart the server.
+- In frontend/src/App.tsx: edit `allType` and refresh the page.
 
 ## Configuration of Local Database
 
@@ -32,6 +36,8 @@ Run MongoDB Compass (on MacOS):
 
 ## Run Backend
 
+> Required: Node.js v21.6+.
+
 - Navigate to the backend folder
 - Execute `npm install`
 - Execute `npm run build`
@@ -44,8 +50,3 @@ Run MongoDB Compass (on MacOS):
 - Navigate to the backend folder
 - Cancel `npm run dev` processus
 - Use `npm run test`
-
-## Add new type of actions
-
-- Edit `CreditList` in backend/.env and `restart server`
-- Edit `allType` array in frontend/src/App.tsx with same variables and refresh the page

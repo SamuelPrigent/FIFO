@@ -2,11 +2,7 @@ import { Credit } from "../models/credits.js"; // credit schema
 import { ICredit } from "../types/types.js";
 import { Request, Response, NextFunction } from "express";
 import { io } from "../server.js"; // socket
-import "dotenv/config";
-
-// credits from .env
-const allTypeString: string = process.env.CreditList || "";
-const allType: string[] = allTypeString.split(",");
+import { allType } from "../constants/constants.js";
 
 // ==== Create 1 credit ====
 export const createCredit = async (
@@ -162,11 +158,12 @@ export const editAllCredits = async (
   try {
     // Objet qui stocke les nouvelles data => response + socket
     const newCredits = {};
+    const notExist = [];
     // Boucle sur les ≠ type de crédits
     for (const type of allType) {
       const credit = await Credit.findOne({ name: type }); // Recherche en BDD
       if (!credit) {
-        console.log(`Credits ${type} non éxistant`);
+        notExist.push(`${type}`);
         continue; // => passe au prochain crédits
       }
       const maxNumber = credit.maxNumber; // recup maxNumber de la BDD
@@ -175,6 +172,9 @@ export const editAllCredits = async (
       await credit.save(); // Sauvegarde en BDD
       // Add data in { newCredits } avec clés correspondant au format attendu par le front
       newCredits[`credits${type}`] = newNumber;
+    }
+    if (notExist.length > 0) {
+      console.log("Credits non éxistant :", notExist);
     }
     // Envoi de l'événement socket avec les data mise à jours
     io.emit("creditsUpdated", {

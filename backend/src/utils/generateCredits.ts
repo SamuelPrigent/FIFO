@@ -1,10 +1,6 @@
 import { Credit } from "../models/credits.js"; // credit schema
 import { io } from "../server.js"; // socket
-import "dotenv/config";
-
-// credits from .env
-const allTypeString: string = process.env.CreditList || "";
-const allType: string[] = allTypeString.split(",");
+import { allType } from "../constants/constants.js";
 
 // -- function to generate credits with maxNumber
 function generateRandomPercentage(maxNumber: number): number {
@@ -20,11 +16,12 @@ async function generateCredits(): Promise<void> {
   try {
     // Objet qui stocke les nouvelles data => response + socket
     const newCredits = {};
+    const notExist = [];
     // Boucle sur les ≠ type de crédits
     for (const type of allType) {
       const credit = await Credit.findOne({ name: type }); // Recherche en BDD
       if (!credit) {
-        console.log(`Credits ${type} non éxistant`);
+        notExist.push(`${type}`);
         continue; // => passe au prochain crédits
       }
       const maxNumber = credit.maxNumber; // recup maxNumber de la BDD
@@ -34,12 +31,16 @@ async function generateCredits(): Promise<void> {
       // Add data in { newCredits } avec clés correspondant au format attendu par le front
       newCredits[`credits${type}`] = newNumber;
     }
+    // S'il y'en a donne la liste des crédits non éxistants
+    if (notExist.length > 0) {
+      console.log("Credits non éxistant :", notExist);
+    }
     // Envoi de l'événement socket avec les data mise à jours
     io.emit("creditsUpdated", {
       message: "Les crédits ont été mis à jour",
       ...newCredits,
     });
-    console.log("All credits updated (controller)");
+    console.log("All credits updated (utils)");
   } catch (error) {
     console.error("Error updating credits:", error);
   }

@@ -19,26 +19,13 @@ import { useSocketio } from "./hooks/useSocketio";
 import { useFetchAndSetCredits } from "./hooks/useFetchAndSetCredits";
 // zustand state
 import useQueueStore from "./store/useQueueStore";
-// types
-import { TypeOfCredits, TypeOfAlerts } from "./types/types.ts";
-// utils
-import { useCreditActions } from "./utils/useCreditActions.ts";
+// -----
+import { TypeOfCredits, TypeOfAlerts } from "./types/types.ts"; // types
+import { useCreditActions } from "./utils/useCreditActions.ts"; // utils
+import { allType } from "./constants/constants.ts";
+// -----
 
 function App() {
-  // allType of actions
-  const allType: Array<keyof TypeOfCredits & string> = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-  ];
-
   // Objet généré via allType permettant de créer le state => credits
   const initialCreditsState = allType.reduce(
     (acc: TypeOfCredits, type: keyof TypeOfCredits) => {
@@ -152,7 +139,7 @@ function App() {
       });
     }
     // => Inverval (1s)
-    const intervalIdNextAction = setInterval(nextAction, 1000); // nextAction()
+    const intervalIdNextAction = setInterval(nextAction, 1 * 1000); // nextAction()
     return () => {
       clearInterval(intervalIdNextAction);
     };

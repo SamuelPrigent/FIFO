@@ -1,8 +1,5 @@
 import { Credit } from "../models/credits.js"; // credit schema
-import "dotenv/config";
-
-const allTypeString: string = process.env.CreditList || "";
-const allType: string[] = allTypeString.split(",");
+import { creditsData, allType } from "../constants/constants.js";
 
 // ========== Create credit if not exist ==========
 async function createCreditIfNotExist(name: string): Promise<void> {
@@ -10,13 +7,27 @@ async function createCreditIfNotExist(name: string): Promise<void> {
   const creditExists = await Credit.findOne({ name });
   // Create credit if not exist
   if (!creditExists) {
-    const newCredit = new Credit({
-      name,
-      number: 5,
-      maxNumber: 5,
-    });
-    await newCredit.save(); // save in database
-    console.log(`Credit ${name} created`);
+    // target creditData in the array
+    const creditData = creditsData.find((item: any) => item[name]);
+    if (creditData) {
+      // If data exists for the given name
+      const { number, maxNumber } = creditData[name];
+      const newCredit = new Credit({
+        name,
+        number,
+        maxNumber,
+      });
+      await newCredit.save(); // Save in database
+      console.log(`Credit ${name} created`);
+    } else {
+      const newCredit = new Credit({
+        name,
+        number: 5,
+        maxNumber: 5,
+      });
+      await newCredit.save(); // save in database
+      console.log(`Credit ${name} created`);
+    }
   }
 }
 // boucle sur allType

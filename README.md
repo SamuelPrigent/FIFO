@@ -8,9 +8,9 @@
 
 ### If You Want To Add New Types Of Actions
 
-- Everything in the project (front, back, and back tests) is design to scale :
-- In backend/.env file: edit `CreditList` and restart the server.
-- In frontend/src/App.tsx: edit `allType` and refresh the page.
+- Everything in the project (front, back, and tests) is design to scale :
+- Edit `allType` in both backend/src/constants and frontend/src/constants
+- Refresh the page (and server will auto restart with nodemon).
 
 ## Configuration of Local Database
 

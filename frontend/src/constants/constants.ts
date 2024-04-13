@@ -1,3 +1,13 @@
+import { TypeOfCredits } from "../types/types";
+
+export const allType: Array<keyof TypeOfCredits & string> = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+];
+
 export const colors: string[] = [
   "greenTheme",
   "blueTheme",

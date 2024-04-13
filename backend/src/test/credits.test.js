@@ -1,13 +1,11 @@
 import request from "supertest";
-import { test, assert, beforeAll } from "vitest";
+import { test, assert, beforeAll, afterAll } from "vitest";
 import server from "../../dist/server.js";
-
-import "dotenv/config";
-const allTypeString = process.env.CreditList || "";
-const allType = allTypeString.split(",");
+import { allType, creditsData } from "../../dist/constants/constants.js";
 
 // ===========================
 
+// beforeAll
 beforeAll(async () => {
   // Vérifier et créer les crédits pour chaque type s'ils n'existent pas
   await Promise.all(
@@ -17,24 +15,54 @@ beforeAll(async () => {
         .set("Accept", "application/json");
       // Si le crédit n'existe pas, le créer
       if (res.status === 404) {
-        await request(server)
-          .post("/api/credits")
-          .send({ name: type, number: 5, maxNumber: 5 })
-          .set("Accept", "application/json");
+        // Données de crédit dans creditsData
+        const creditData = creditsData.find((item) => item[type]);
+        if (creditData) {
+          const { number, maxNumber } = creditData[type];
+          // Create crédit avec les données trouvées
+          await request(server)
+            .post("/api/credits")
+            .send({ name: type, number, maxNumber })
+            .set("Accept", "application/json");
+        } else {
+          // Create crédit avec des valeurs par défaut
+          await request(server)
+            .post("/api/credits")
+            .send({ name: type, number: 5, maxNumber: 5 })
+            .set("Accept", "application/json");
+        }
       }
     })
   );
 });
 
+// afterAll
+afterAll(async () => {
+  // Récupérer tous les crédits existants
+  const getAllResponse = await request(server)
+    .get("/api/credits")
+    .set("Accept", "application/json");
+
+  if (getAllResponse.status === 200 && getAllResponse.body.length > 0) {
+    // Supprimer chaque crédit récupéré
+    await Promise.all(
+      getAllResponse.body.map(async (credit) => {
+        await request(server)
+          .delete(`/api/credits/${credit.name}`)
+          .set("Accept", "application/json");
+      })
+    );
+  }
+});
+
 // ===========================
 
-// Tests pour vérifier la réponse pour chaque type de crédit
 allType.forEach((type) => {
+  // GET -- check le format de la réponse
   test(`GET ${type} (response format)`, async () => {
     const res = await request(server)
       .get(`/api/credits/${type}`)
       .set("Accept", "application/json");
-
     assert.equal(res.status, 200);
     assert.property(res.body, "_id");
     assert.propertyVal(res.body, "name", type);
@@ -67,21 +95,30 @@ allType.forEach((type) => {
     assert.equal(resDelete.status, 200);
   });
 
-  // POST (Create) test pour chaque type
+  // POST (Create) test pour chaque type --- avec valeur définis ou par défault si non éxistante
   test(`Create ${type}`, async () => {
+    // default value
+    let number = 5;
+    let maxNumber = 5;
+    // Target data dans creditsData
+    const creditData = creditsData.find((item) => item[type]);
+    // Si data exist => on les utilise
+    if (creditData) {
+      number = creditData[type].number;
+      maxNumber = creditData[type].maxNumber;
+    }
     const newCredit = {
-      name: type.toLowerCase(), // Assurez-vous que la casse correspond à vos attentes côté serveur
-      number: 5,
-      maxNumber: 5,
+      name: type.toLowerCase(),
+      number: number,
+      maxNumber: maxNumber,
     };
     const res = await request(server)
       .post("/api/credits")
       .send(newCredit)
       .set("Accept", "application/json");
-
     assert.equal(res.status, 201);
     assert.equal(res.body.name, type);
-    assert.equal(res.body.number, 5);
-    assert.equal(res.body.maxNumber, 5);
+    assert.equal(res.body.number, number);
+    assert.equal(res.body.maxNumber, maxNumber);
   });
 });

@@ -1,9 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { ICredit } from "../types/types.js";
-import "dotenv/config";
-
-const validNamesString: string = process.env.CreditList || "";
-const validNames: string[] = validNamesString.split(",");
+import { allType } from "../constants/constants.js";
 
 const creditSchema: Schema = new mongoose.Schema({
   name: {
@@ -14,7 +11,7 @@ const creditSchema: Schema = new mongoose.Schema({
       validator: function (value: string): boolean {
         // pour ne pas invalider minuscules
         const uppercaseValue: string = value.toUpperCase();
-        return validNames.includes(uppercaseValue);
+        return allType.includes(uppercaseValue);
       },
       message: (props: { value: string }): string =>
         `${props.value} n'est pas une valeur valide pour le champ 'name'`,

@@ -23,6 +23,7 @@ import useQueueStore from "./store/useQueueStore";
 import { TypeOfCredits, TypeOfAlerts } from "./types/types.ts"; // types
 import { useCreditActions } from "./utils/useCreditActions.ts"; // utils
 import { allType } from "./constants/constants.ts";
+
 // -----
 
 function App() {
@@ -120,6 +121,7 @@ function App() {
       // check for all type of crédits
       allType.forEach((type) => {
         const creditsX = getCreditsState(type);
+        // const creditsX = creditsRef.current[`${type}`];
         // Pas d'alerte si => pas de crédits X en attente ou si crédits de X > 0
         if (
           (typeof creditsX === "number" && creditsX > 0) ||
@@ -127,7 +129,7 @@ function App() {
         ) {
           updateAlertState(type, false);
         }
-        // Retire les éléments du tableau qui n'ont plus de crédits
+        // Retire éléments du tableau qui n'ont plus de crédits
         if (
           queueStore[0] === type &&
           creditsX === 0 &&

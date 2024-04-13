@@ -160,20 +160,6 @@ $darkblue: #001a72;
   align-items: center;
 }
 
-.queueList {
-  margin: 10px auto;
-  max-width: 620px;
-}
-
-.queueListComponent {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-  flex-wrap: wrap;
-  row-gap: 15px;
-}
-
 .taskContainer {
   display: flex;
   justify-content: center;
@@ -202,13 +188,50 @@ $darkblue: #001a72;
   justify-content: center;
 }
 
+.queueList {
+  margin: 10px auto;
+  // max-width: 620px;
+  width: 650px;
+}
+
+.queueListComponent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  row-gap: 15px;
+}
+
 .arrowQueue {
   font-size: 22px;
   font-weight: bold;
+  color: black;
 }
 
-.arrowQueueWhite {
+.arrowQueueNext {
   font-size: 22px;
   font-weight: bold;
-  color: transparent;
+  color: black;
 }
+
+// spinner
+.spinner {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 4px solid;
+  border-color: #dbdcef;
+  border-top-color: #7c7d8b;
+  animation: spinner-d3wgkg 1.1s infinite linear;
+  margin-right: 1px;
+  position: relative;
+  right: 2px;
+}
+
+@keyframes spinner-d3wgkg {
+  to {
+    transform: rotate(1turn);
+  }
+}
+// end spinner

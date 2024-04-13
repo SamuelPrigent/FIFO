@@ -11,8 +11,8 @@ const QueueList: React.FC<QueueListProps> = ({ queue }) => {
         const colorClass = colors[actionIndex % colors.length];
         return (
           <div key={index} className="taskContainer">
+            {/* {index === 0 && <span className="spinner"></span>} */}
             {/* {index === 0 && <span className="arrowQueueNext"> -&gt; </span>} */}
-            {index === 0 && <span className="spinner"></span>}
             {index !== 0 && <span className="arrowQueue"> -&gt; </span>}
             <span className={`task task${item} ${colorClass}`}>{item}</span>
           </div>

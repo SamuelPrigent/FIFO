@@ -118,40 +118,41 @@ function App() {
     }
   }
 
+  // check alerts and disable it after 2.5 sec
+  function checkAndPopAlerts(type: string, creditsX: number, queue: string[]) {
+    if (creditsX === 0 && queue.includes(type)) {
+      updateAlertState(type, true);
+      setTimeout(() => {
+        updateAlertState(type, false);
+      }, 2500);
+    }
+  }
+
   // find next action
   function nextAction() {
-    // Check if "action" waiting in queue
-    if (queueStoreRef.current.length > 0) {
-      // console.clear();
-      const nextActionInQueue = queueStoreRef.current[0]; // get next "action" (ex : "A")
-      executeActionByType(nextActionInQueue); // execute l'action
-      removeActionFromQueueLS(0); // retire l'action du local storage
-    } else {
-      // Pas d'alerte si aucune action n'est en atente
-      allType.forEach((type) => {
-        updateAlertState(type, false);
-      });
-    }
-    // check for all type of crédits
+    // Copie initiale de la queue actuelle
+    let newQueue = [...queueStoreRef.current];
+    // Boucle
     allType.forEach((type) => {
-      const creditsX = creditsRef.current[`${type}`];
-      // Pas d'alerte si => pas de crédits X en attente ou si crédits de X > 0
-      if (
-        (typeof creditsX === "number" && creditsX > 0) ||
-        !queueStoreRef.current.includes(`${type}`)
-      ) {
-        updateAlertState(type, false);
-      }
-      // Retire éléments du tableau qui n'ont plus de crédits
-      if (
-        queueStoreRef.current[0] === type &&
-        creditsX === 0 &&
-        queueStoreRef.current.includes(type)
-      ) {
-        const newQueue = queueStoreRef.current.filter((item) => item !== type);
-        setQueueLS(newQueue); // local storage
+      const creditsX = creditsRef.current[type];
+      // check alert avant de filtré la queue
+      checkAndPopAlerts(type, creditsX as number, newQueue);
+      // Remove creditsX with no credits from newQueue
+      if (creditsX === 0 && newQueue.includes(type)) {
+        newQueue = newQueue.filter((item) => item !== type);
       }
     });
+    // Update queue une fois avec les modif potentiellement apportées
+    if (newQueue.length !== queueStoreRef.current.length) {
+      setQueueLS(newQueue);
+      queueStoreRef.current = newQueue;
+    }
+    // Exécuter l'action si la queue n'est pas vide
+    if (newQueue.length > 0) {
+      const nextActionInQueue = newQueue[0];
+      executeActionByType(nextActionInQueue);
+      removeActionFromQueueLS(0);
+    }
   }
 
   // => Inverval (1.7s)

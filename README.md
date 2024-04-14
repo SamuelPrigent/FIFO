@@ -4,7 +4,7 @@
 
 - Explore a FIFO (First In, First Out) queue system implemented in this project, where you can enqueue different types of actions for execution.
 - Every 1.7-sec, next action is executed and costs 1 credits (actionA uses creditsA, actionB uses creditsB, etc).
-- Every 25-sec, credits are regenerated within a range of 80-100% of their maximum value.
+- Every 30-sec, credits are regenerated within a range of 80-100% of their maximum value.
 
 ### If You Want To Add New Types Of Actions
 

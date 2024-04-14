@@ -47,7 +47,7 @@ async function generateCredits(): Promise<void> {
 }
 
 function generateCreditsPeriodically(): NodeJS.Timeout {
-  const intervalId = setInterval(generateCredits, 25 * 1000); // Intervalle de 25s
+  const intervalId = setInterval(generateCredits, 30 * 1000); // Intervalle de 30s
   return intervalId;
 }
 

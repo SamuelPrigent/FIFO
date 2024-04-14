@@ -1,5 +1,5 @@
 // react
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 // style
 import "./style/reset.css";
 import "./style/App.scss";
@@ -50,14 +50,9 @@ function App() {
   const [credits, setCredits] = useState<TypeOfCredits>(initialCreditsState);
   const [alerts, setAlerts] = useState<TypeOfAlerts>(initialAlertsState);
 
-  // ====== Edit and Get local state of credits by (type) ======
-  const {
-    getCreditsState,
-    updateCreditsState,
-    updateAlertState,
-    deleteCredits,
-    resetCredits,
-  } = useCreditActions(allType, setCredits, setAlerts, credits);
+  // ====== Credits and Alert state handle (by type) ======
+  const { updateCreditsState, updateAlertState, deleteCredits, resetCredits } =
+    useCreditActions(setCredits, setAlerts, allType);
 
   // ====== Import zustand for local storage management ======
   const {
@@ -68,6 +63,23 @@ function App() {
     removeActionFromQueueLS,
   } = useQueueStore();
 
+  // =========== UseRef to get updated state value ==========
+  // queueStoreRef
+  const queueStoreRef = useRef(queueStore);
+  useEffect(() => {
+    queueStoreRef.current = queueStore;
+  }, [queueStore]);
+  // creditsRef
+  const creditsRef = useRef(credits);
+  useEffect(() => {
+    creditsRef.current = credits;
+  }, [credits]);
+  // AlertsRef
+  const AlertsRef = useRef(alerts);
+  useEffect(() => {
+    AlertsRef.current = alerts;
+  }, [alerts]);
+
   // ========= useEffect Socket-io (get creditsData from back instantly)  =========
   useSocketio(updateCreditsState, allType);
 
@@ -76,77 +88,79 @@ function App() {
     useFetchAndSetCredits(updateCreditsState, type);
   });
 
-  // ========= Execute nextAction in queueStore[0]  // interval 1sec =========
-  useEffect(() => {
-    async function executeActionByType(type: string) {
-      try {
-        const creditsData = await fetchCreditsData(`${type}`); // get data
-        const databaseCredits = creditsData.number; // get : data.number // check via database
-        if (databaseCredits > 0) {
-          putCreditsData(`${type}`, databaseCredits - 1, creditsData.__v) // Update Database with data
-            .then(() => {
-              updateCreditsState(type, databaseCredits - 1); // then update local State
-            })
-            .catch(async () => {
-              console.log(`Credits ${type} (retry-update)`);
-              const updatedCreditsData = await fetchCreditsData(`${type}`);
-              putCreditsData(
-                `${type}`,
-                updatedCreditsData.number - 1,
-                updatedCreditsData.__v
-              );
-              updateCreditsState(type, updatedCreditsData.number - 1);
-            });
-        } else {
-          // set alert true
-          updateAlertState(type, true);
-        }
-      } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
-      }
-    }
-
-    function nextAction() {
-      // Check if "action" waiting in queue
-      if (queueStore.length > 0) {
-        // console.clear();
-        const nextActionInQueue = queueStore[0]; // get next "action" (ex : "A")
-        executeActionByType(nextActionInQueue); // execute l'action
-        removeActionFromQueueLS(0); // retire l'action du local storage
+  // ========= Gestion of action execution and queueStore update =========
+  // execute 1 action
+  async function executeActionByType(type: string) {
+    try {
+      const creditsData = await fetchCreditsData(`${type}`); // get data
+      const databaseCredits = creditsData.number; // get : data.number // check via database
+      if (databaseCredits > 0) {
+        putCreditsData(`${type}`, databaseCredits - 1, creditsData.__v) // Update Database with data
+          .then(() => {
+            updateCreditsState(type, databaseCredits - 1); // then update local State
+          })
+          .catch(async () => {
+            console.log(`Credits ${type} (retry-update)`);
+            const updatedCreditsData = await fetchCreditsData(`${type}`);
+            putCreditsData(
+              `${type}`,
+              updatedCreditsData.number - 1,
+              updatedCreditsData.__v
+            );
+            updateCreditsState(type, updatedCreditsData.number - 1);
+          });
       } else {
-        // Pas d'alerte si aucune action n'est en atente
-        allType.forEach((type) => {
-          updateAlertState(type, false);
-        });
+        // set alert true
+        updateAlertState(type, true);
       }
-      // check for all type of crédits
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
+  }
+
+  // find next action
+  function nextAction() {
+    // Check if "action" waiting in queue
+    if (queueStoreRef.current.length > 0) {
+      // console.clear();
+      const nextActionInQueue = queueStoreRef.current[0]; // get next "action" (ex : "A")
+      executeActionByType(nextActionInQueue); // execute l'action
+      removeActionFromQueueLS(0); // retire l'action du local storage
+    } else {
+      // Pas d'alerte si aucune action n'est en atente
       allType.forEach((type) => {
-        const creditsX = getCreditsState(type);
-        // const creditsX = creditsRef.current[`${type}`];
-        // Pas d'alerte si => pas de crédits X en attente ou si crédits de X > 0
-        if (
-          (typeof creditsX === "number" && creditsX > 0) ||
-          !queueStore.includes(`${type}`)
-        ) {
-          updateAlertState(type, false);
-        }
-        // Retire éléments du tableau qui n'ont plus de crédits
-        if (
-          queueStore[0] === type &&
-          creditsX === 0 &&
-          queueStore.includes(type)
-        ) {
-          const newQueue = queueStore.filter((item) => item !== type);
-          setQueueLS(newQueue); // local storage
-        }
+        updateAlertState(type, false);
       });
     }
-    // => Inverval (1s)
-    const intervalIdNextAction = setInterval(nextAction, 1 * 1000); // nextAction()
+    // check for all type of crédits
+    allType.forEach((type) => {
+      const creditsX = creditsRef.current[`${type}`];
+      // Pas d'alerte si => pas de crédits X en attente ou si crédits de X > 0
+      if (
+        (typeof creditsX === "number" && creditsX > 0) ||
+        !queueStoreRef.current.includes(`${type}`)
+      ) {
+        updateAlertState(type, false);
+      }
+      // Retire éléments du tableau qui n'ont plus de crédits
+      if (
+        queueStoreRef.current[0] === type &&
+        creditsX === 0 &&
+        queueStoreRef.current.includes(type)
+      ) {
+        const newQueue = queueStoreRef.current.filter((item) => item !== type);
+        setQueueLS(newQueue); // local storage
+      }
+    });
+  }
+
+  // => Inverval (1.7s)
+  useEffect(() => {
+    const intervalIdNextAction = setInterval(nextAction, 1.7 * 1000);
     return () => {
       clearInterval(intervalIdNextAction);
     };
-  }, [queueStore, credits]);
+  }, []);
 
   return (
     <>

@@ -190,13 +190,12 @@ $darkblue: #001a72;
 
 .queueList {
   margin: 10px auto;
-  // max-width: 620px;
-  width: 650px;
+  width: 590px;
 }
 
 .queueListComponent {
   display: flex;
-  justify-content: center;
+  // justify-content: center;
   align-items: center;
   gap: 4px;
   flex-wrap: wrap;

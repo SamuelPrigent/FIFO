@@ -1,26 +1,11 @@
 import { putCreditsData } from "../api/creditsRequests";
-import {
-  SetCreditsFunction,
-  SetAlertsFunction,
-  TypeOfCredits,
-} from "../types/types";
+import { SetCreditsFunction, SetAlertsFunction } from "../types/types";
 
 export const useCreditActions = (
-  allType: string[],
   setCredits: SetCreditsFunction,
   setAlerts: SetAlertsFunction,
-  credits: TypeOfCredits
+  allType: string[]
 ) => {
-  function getCreditsState(type: keyof TypeOfCredits): number | string | null {
-    const creditValue = credits[type];
-    if (creditValue !== undefined) {
-      return creditValue;
-    } else {
-      console.error("Type inconnu:", type);
-      return null;
-    }
-  }
-
   // set one credit state
   const updateCreditsState = (type: string, value: number) => {
     setCredits((prevCredits) => ({
@@ -54,7 +39,6 @@ export const useCreditActions = (
   };
 
   return {
-    getCreditsState,
     updateCreditsState,
     deleteCredits,
     resetCredits,

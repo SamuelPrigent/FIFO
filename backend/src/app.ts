@@ -29,7 +29,7 @@ app.use("/api/credits", creditsRoute);
 
 // ==== Say hello ====
 app.get("/", (req, res) => {
-  res.send("Hello Waalaxy");
+  res.send("Hello");
 });
 
 export default app;

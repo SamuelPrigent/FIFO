@@ -8,10 +8,11 @@ import reset2 from "./assets/reset2.svg";
 import reset from "./assets/reset.svg"; // dev mode
 import cross from "./assets/cross.svg"; // dev mode
 // components
-import CreditsList from "./components/CreditsList";
-import ActionButton from "./components/ActionButton";
+// import Alert from "./components/Alert";
+import AlertList from "./components/AlertList.tsx";
+import CreditsElementList from "./components/CreditsElementList.tsx";
+import ActionButtonList from "./components/ActionButtonList.tsx";
 import QueueList from "./components/QueueList";
-import Alert from "./components/Alert";
 // api requests
 import { fetchCreditsData, putCreditsData } from "./api/creditsRequests";
 // hooks
@@ -165,27 +166,16 @@ function App() {
         <div className="sectionContainer">
           <div className="titleElement">{"Crédits disponible"}</div>
           <div className="creditsContainer">
-            {allType.map((type, index) => (
-              <CreditsList
-                key={type}
-                type={type}
-                credits={credits}
-                index={index}
-              />
-            ))}
+            <CreditsElementList allType={allType} credits={credits} />
           </div>
         </div>
         <div className="sectionContainer">
           <div className="titleElement">{"Liste d'actions"}</div>
           <div className="buttonContainer">
-            {allType.map((type, index) => (
-              <ActionButton
-                key={type}
-                actionType={type}
-                addActionToQueue={addInQueueLS}
-                index={index}
-              />
-            ))}
+            <ActionButtonList
+              allType={allType}
+              addActionToQueue={addInQueueLS}
+            />
           </div>
         </div>
         <div className="sectionContainer">
@@ -206,11 +196,7 @@ function App() {
               "Aucune action en attente"
             )}
           </div>
-          {allType.map((type) =>
-            alerts[type] ? (
-              <Alert key={type} message={`Crédit insuffisant : ${type}`} />
-            ) : null
-          )}
+          <AlertList allType={allType} alerts={alerts} />
         </div>
       </div>
     </>

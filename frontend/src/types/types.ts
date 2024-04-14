@@ -31,9 +31,26 @@ export interface ActionButtonProps {
   index: number;
 }
 
+// components/ActionButtonList
+export interface ActionButtonListProps {
+  allType: string[];
+  addActionToQueue: (actionType: string) => void;
+}
+
+// components/ActionButtonList
+export interface CreditsElementListProps {
+  allType: string[];
+  credits: TypeOfCredits;
+}
+
 // components/Alert
 export interface AlertProps {
   message: string;
+}
+// components/AlertList
+export interface AlertListProps {
+  allType: string[];
+  alerts: TypeOfAlerts;
 }
 
 // components/CreditsList

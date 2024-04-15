@@ -8,16 +8,16 @@ import reset2 from "./assets/reset2.svg";
 import reset from "./assets/reset.svg"; // dev mode
 import cross from "./assets/cross.svg"; // dev mode
 // components
-// import Alert from "./components/Alert";
-import AlertList from "./components/AlertList.tsx";
 import CreditsElementList from "./components/CreditsElementList.tsx";
 import ActionButtonList from "./components/ActionButtonList.tsx";
 import QueueList from "./components/QueueList";
+import AlertList from "./components/AlertList.tsx";
 // api requests
 import { fetchCreditsData, putCreditsData } from "./api/creditsRequests";
 // hooks
 import { useSocketio } from "./hooks/useSocketio";
 import { useFetchAndSetCredits } from "./hooks/useFetchAndSetCredits";
+// import { useInterval } from 'usehooks-ts'
 // zustand state
 import useQueueStore from "./store/useQueueStore";
 // -----
@@ -28,6 +28,13 @@ import { allType } from "./constants/constants.ts";
 // -----
 
 function App() {
+  // ============= TEST =============
+  const [isPaused, setIsPaused] = useState<any>(false);
+  const intervalIdRef = useRef<any>(null);
+  const startTimeRef = useRef<any>(null);
+  const elapsedTimeRef = useRef<any>(0);
+  // ============= TEST =============
+
   // Objet généré via allType permettant de créer le state => credits
   const initialCreditsState = allType.reduce(
     (acc: TypeOfCredits, type: keyof TypeOfCredits) => {
@@ -89,7 +96,7 @@ function App() {
   });
 
   // ========= Gestion of action execution and queueStore update =========
-  // execute 1 action
+  // Execute 1 action
   async function executeActionByType(type: string) {
     try {
       const creditsData = await fetchCreditsData(`${type}`); // get data
@@ -128,7 +135,7 @@ function App() {
     }
   }
 
-  // find next action
+  // Find nextAction
   function nextAction() {
     // Copie initiale de la queue actuelle
     let newQueue = [...queueStoreRef.current];
@@ -142,7 +149,7 @@ function App() {
         newQueue = newQueue.filter((item) => item !== type);
       }
     });
-    // Update queue une fois avec les modif potentiellement apportées
+    // Update queue une seule fois avec les modifs potentielles
     if (newQueue.length !== queueStoreRef.current.length) {
       setQueueLS(newQueue);
       queueStoreRef.current = newQueue;
@@ -155,12 +162,43 @@ function App() {
     }
   }
 
-  // => Inverval (1.7s)
+  // Démarre l'interval selon un temps calculé 1sec ou moins avec un délai calculé s'il y'a eu une pause
+  function handleStartInterval(customDelay = 1 * 1000) {
+    clearInterval(intervalIdRef.current);
+    intervalIdRef.current = setInterval(() => {
+      nextAction();
+      startTimeRef.current = Date.now(); // Réinitialise ce temps pour le prochain intervalle
+    }, customDelay);
+  }
+
+  // Pause temporaire de 500ms à chaque ajout d'action dans queueStore
   useEffect(() => {
-    const intervalIdNextAction = setInterval(nextAction, 1.7 * 1000);
-    return () => {
-      clearInterval(intervalIdNextAction);
-    };
+    if (queueStore.length > 0) {
+      setIsPaused(true);
+      const timeoutId = setTimeout(() => {
+        setIsPaused(false);
+      }, 500);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [queueStore]);
+
+  // Pause et reprise de l'intervalle // avec temps custom selon
+  useEffect(() => {
+    if (isPaused) {
+      clearInterval(intervalIdRef.current); // clear l'ancien interval
+      elapsedTimeRef.current = Date.now() - startTimeRef.current; // calcul le temps écoulé dans l'interval
+    } else {
+      // Soustrait le temps déjà attendu pour le prochain interval
+      const remainingTime = 1 * 1000 - elapsedTimeRef.current;
+      handleStartInterval(Math.max(remainingTime, 500)); // Temps minimal 500ms
+    }
+  }, [isPaused]);
+
+  // Interval initial 1sec
+  useEffect(() => {
+    startTimeRef.current = Date.now();
+    handleStartInterval();
+    return () => clearInterval(intervalIdRef.current);
   }, []);
 
   return (

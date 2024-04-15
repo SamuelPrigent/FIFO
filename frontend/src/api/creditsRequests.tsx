@@ -1,7 +1,6 @@
 const PORT = import.meta.env.VITE_API_PORT || 3000; // env port
 import { CreditData } from "../types/types.ts"; // types
 
-// fetch data return data
 export async function fetchCreditsData(name: string): Promise<CreditData> {
   return fetch(`http://localhost:${PORT}/api/credits/${name}`)
     .then((response) => {
@@ -43,4 +42,18 @@ export function putCreditsData(
         reject(error);
       });
   });
+}
+
+export async function fetchAllCreditsData(): Promise<any> {
+  return fetch(`http://localhost:${PORT}/api/credits/`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("There was a problem with the fetch operation:", error);
+      throw error;
+    });
 }

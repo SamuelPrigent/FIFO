@@ -1,17 +1,18 @@
 import { useEffect } from "react";
-import { fetchCreditsData } from "../api/creditsRequests";
+import { fetchAllCreditsData } from "../api/creditsRequests";
+import { UpdateCreditsStateFunction } from "../types/types";
 
-type UpdateCreditsStateFunction = (type: string, value: number) => void;
-
-export function useFetchAndSetCredits(
-  updateCreditsState: UpdateCreditsStateFunction,
-  type: string
+// Get data on reload
+export function useFetchAllAndSetCredits(
+  updateCreditsState: UpdateCreditsStateFunction
 ) {
   useEffect(() => {
-    async function FetchAndSetCredits() {
-      const creditsXData = await fetchCreditsData(type); // fetch credits of "type"
-      updateCreditsState(type, creditsXData.number); // update local state
+    async function FetchAndSetAllCredits() {
+      const AllCreditsData = await fetchAllCreditsData(); // get all credits
+      AllCreditsData.forEach((credit: any) => {
+        updateCreditsState(credit.name, credit.number); // update local state
+      });
     }
-    FetchAndSetCredits(); // on reload
+    FetchAndSetAllCredits(); // on reload
   }, []);
 }

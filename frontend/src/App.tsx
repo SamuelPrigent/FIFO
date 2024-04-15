@@ -16,8 +16,8 @@ import AlertList from "./components/AlertList.tsx";
 import { fetchCreditsData, putCreditsData } from "./api/creditsRequests";
 // hooks
 import { useSocketio } from "./hooks/useSocketio";
-import { useFetchAndSetCredits } from "./hooks/useFetchAndSetCredits";
-// import { useInterval } from 'usehooks-ts'
+// import { useFetchAndSetCredits } from "./hooks/useFetchAndSetCredits";
+import { useFetchAllAndSetCredits } from "./hooks/useFetchAndSetCredits";
 // zustand state
 import useQueueStore from "./store/useQueueStore";
 // -----
@@ -91,9 +91,7 @@ function App() {
   useSocketio(updateCreditsState, allType);
 
   // ========= Fetch data for local state for all type of credits (on reload) =========
-  allType.forEach((type) => {
-    useFetchAndSetCredits(updateCreditsState, type);
-  });
+  useFetchAllAndSetCredits(updateCreditsState);
 
   // ========= Gestion of action execution and queueStore update =========
   // Execute 1 action

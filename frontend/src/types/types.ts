@@ -69,6 +69,8 @@ export interface QueueListProps {
 export interface CreditsData {
   [key: string]: number | undefined;
 }
+// hooks useFetch
+export type UpdateCreditsStateFunction = (type: string, value: number) => void;
 
 // stores/useQueueStore
 export interface QueueState {

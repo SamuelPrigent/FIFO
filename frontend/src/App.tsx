@@ -16,8 +16,7 @@ import AlertList from "./components/AlertList.tsx";
 import { fetchCreditsData, putCreditsData } from "./api/creditsRequests";
 // hooks
 import { useSocketio } from "./hooks/useSocketio";
-// import { useFetchAndSetCredits } from "./hooks/useFetchAndSetCredits";
-import { useFetchAllAndSetCredits } from "./hooks/useFetchAndSetCredits";
+import { getAllDataAndUpdateState } from "./hooks/useSWR.tsx";
 // zustand state
 import useQueueStore from "./store/useQueueStore";
 // -----
@@ -28,12 +27,11 @@ import { allType } from "./constants/constants.ts";
 // -----
 
 function App() {
-  // ============= TEST =============
+  // Utilisé pour créer un interval de queue calculé
   const [isPaused, setIsPaused] = useState<any>(false);
   const intervalIdRef = useRef<any>(null);
   const startTimeRef = useRef<any>(null);
   const elapsedTimeRef = useRef<any>(0);
-  // ============= TEST =============
 
   // Objet généré via allType permettant de créer le state => credits
   const initialCreditsState = allType.reduce(
@@ -53,7 +51,7 @@ function App() {
     {} as TypeOfAlerts
   );
 
-  // State généré via array allType et ses éléments : ["A", "B", "C", ...]
+  // State : {"key" : value, "key2" : value, ...}
   const [credits, setCredits] = useState<TypeOfCredits>(initialCreditsState);
   const [alerts, setAlerts] = useState<TypeOfAlerts>(initialAlertsState);
 
@@ -91,7 +89,7 @@ function App() {
   useSocketio(updateCreditsState, allType);
 
   // ========= Fetch data for local state for all type of credits (on reload) =========
-  useFetchAllAndSetCredits(updateCreditsState);
+  getAllDataAndUpdateState(updateCreditsState);
 
   // ========= Gestion of action execution and queueStore update =========
   // Execute 1 action

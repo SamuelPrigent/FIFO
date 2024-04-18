@@ -14,6 +14,12 @@ export type AlertState = {
 export type SetAlertsFunction = Dispatch<SetStateAction<AlertState>>;
 export type TypeOfAlerts = { [key: string]: boolean };
 
+export type ColorThemes = {
+  [key: string]: string;
+};
+// hooks useFetch
+export type UpdateCreditsStateFunction = (type: string, value: number) => void;
+
 // === Interface ===
 // api/creditsRequests
 export interface CreditData {
@@ -69,8 +75,6 @@ export interface QueueListProps {
 export interface CreditsData {
   [key: string]: number | undefined;
 }
-// hooks useFetch
-export type UpdateCreditsStateFunction = (type: string, value: number) => void;
 
 // stores/useQueueStore
 export interface QueueState {
